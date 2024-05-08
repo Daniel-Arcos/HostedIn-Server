@@ -1,3 +1,4 @@
+const { token } = require('morgan')
 const UserService = require('../services/AuthService')
 
 const signUp = async (req, res) => {
@@ -16,9 +17,16 @@ const signUp = async (req, res) => {
         console.log(email)
 
         result = await UserService.createAccount(email, fullName, birthDate, phoneNumber, password);
+        res.cookie('token', result[1]);
+        const documentoUserJson = result[0].toJSON()
         res.status(200).send({
             message: "Cuenta creada exitosamente",
-            token: result[1]
+            user: {
+                email: documentoUserJson.email,
+                fullName: documentoUserJson.fullName,
+                phoneNumber: documentoUserJson.phoneNumber,
+                id: documentoUserJson._id
+            }
         })
     } catch (error) {
         console.log(error)
