@@ -10,12 +10,20 @@ const createAccount = async (email, fullName, birthDate, phoneNumber, password) 
         if (userFound) {
             console.log("Usuario encontrado. Existe.")
             return ["", ""]
-        } else {
+        } else {           
             console.log("Usuario no encontrado.")
+
+
+
+            const partesFecha = birthDate.split('/');
+            const fechaNacimiento = new Date(partesFecha[2], partesFecha[1] - 1, partesFecha[0]);
+            
+
+
             const newUser = new User({
                 email,
                 fullName,
-                birthDate,
+                fechaNacimiento,
                 phoneNumber,
                 password: await User.encryptPassword(password)
               })
