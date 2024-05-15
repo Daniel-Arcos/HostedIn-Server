@@ -21,7 +21,7 @@ const createAccount = async (email, fullName, birth, phoneNumber, password) => {
                 birthDate,
                 phoneNumber,
                 password: await User.encryptPassword(password)
-              })
+            })
     
             const savedUser = await newUser.save();
             const token = Jwt.sign(savedUser._id)
