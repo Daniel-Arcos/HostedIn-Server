@@ -11,6 +11,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(morgan('dev'))
 app.use("/api/v1", v1Router)
-app.listen(PORT, '0.0.0.0', () => { // Escuchar en todas las interfaces de red
+app.listen(PORT, '0.0.0.0', () => { 
     console.log(`Server listening on port:${PORT}/api/v1`)
 })
