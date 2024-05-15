@@ -2,43 +2,105 @@ const { token } = require('morgan')
 const User = require('../models/User')
 const PasswordCodes = require('../models/PasswordCode')
 const Jwt = require('../Security/Jwt')
-const MailSender = require('../utils/MailSender')
+const RecoverPassUtils = require('../utils/RecoverPasswordUtils')
 
 const sendEmailCode = async (email) => {
     try{
         const userFound = await User.findOne({email: email})
         if(!userFound){
             console.log("Email no pertenece a nadie.")
-            return false
+            throw {
+                status: 404,
+                message: "Correo electrónico no encontrado"
+            }
         }
         else{
             console.log("Email encontrado. Existe.")
-            const code = generateRandomCode()
-            const emailWasSend = MailSender.sendCodeVerificacion(email, code)
-            if(emailWasSend){
-                const currentDate = new Date()
-
-                const newPasswordCode = new PasswordCodes({
-                    email,
-                    code, 
-                    currentDate
-                })
-                const savedPassCode = await newPasswordCode.save();
-                return true
-            }
-            else{
-                return false
-            }            
+            const currentCode = await PasswordCodes.findOne({ email: email });
+            if(currentCode){                
+                if (RecoverPassUtils.is10MinutesAgo(currentCode.inssuanceDate)) {                    
+                    console.log("Ya pasaron 10 min, genera otro.")
+                    await RecoverPassUtils.sendEmail(email, currentCode)
+                }
+                else{
+                    console.log("Aun no han pasado 10 minutos, codigo pendiente.")
+                    throw {
+                        status: 200,
+                        message: "Existe un codigo de recuperacion vigente."
+                    }
+                }               
+            }   
+            else{                
+                console.log("No hay registro de codigo de password.")
+                await RecoverPassUtils.sendEmail(email)
+            }                    
         }
     }catch(error){
-        console.log(error)
+        throw {
+            status: error?.status || 500,
+            message: error.message
+        }
     }
 }
 
-function generateRandomCode() {
-    const min = 10000;
-    const max = 99999; 
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+const verifyCodeToRecoverPassword = async (code) => {
+    try {
+        const codeFound = await PasswordCodes.findOne({ code: code })
+        if(codeFound){
+            if (RecoverPassUtils.is10MinutesAgo(codeFound.inssuanceDate)) {                    
+                console.log("Ya caduco el codigo, genera otro.")
+                throw {
+                    status: 400,
+                    message: "Codigo expirado, Genere otro"
+                }
+            }
+            else{
+                console.log("Codigo correcto")
+                const token = Jwt.confirmEmailCode(codeFound.code)
+                console.log(token)
+                return token
+            }
+        }
+        else{
+            console.log("codigo incorrecto")
+            throw {
+                status: 401,
+                message: "Codigo incorrecto"
+            }
+        }
+    } catch (error) {
+        throw {
+            status: error?.status || 500,
+            message: error.message
+        }
+    }
 }
 
-module.exports = {sendEmailCode}
+const changePasswordByCodeRecover = async (newPassword, email) => {
+    try {
+        const userFound = await User.findOne({email: email})
+        if(userFound){
+            userFound.password = await User.encryptPassword(newPassword)
+            console.log(userFound.password)
+            await userFound.save()            
+        }
+        else{
+            throw {
+                status: 404,
+                message: "Correo electrónico no encontrado"
+            }
+        }
+    } catch (error) {
+        throw {
+            status: error?.status || 500,
+            message: error.message
+        }
+    }
+}
+
+
+module.exports = {
+    sendEmailCode, 
+    verifyCodeToRecoverPassword,
+    changePasswordByCodeRecover
+}

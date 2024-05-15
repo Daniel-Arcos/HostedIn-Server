@@ -12,7 +12,7 @@ function createMailTransporter(){
 }
 
 
-const sendCodeVerificacion = (email, code) =>{
+const sendCodeVerificacion = async (email, code) =>{
     const transporter = createMailTransporter()
 
     const mailOptions = {
@@ -22,16 +22,16 @@ const sendCodeVerificacion = (email, code) =>{
         html: `<p>Hello, enter this code in your HostedIn app</p><p>${code}</p>`
     }
 
-    transporter.sendMail(mailOptions, (error,info)=>{
-        if(error){
-            console.log(error)
-            return false
+    try {
+        await transporter.sendMail(mailOptions);
+        console.log("Code sent");
+        return true;
+    } catch (error) {
+        throw {
+            status: 400,
+            message: "Email no enviado"
         }
-        else{
-            console.log("Code sent")
-            return true
-        }
-    })
+    }
 }
 
 module.exports = {sendCodeVerificacion}

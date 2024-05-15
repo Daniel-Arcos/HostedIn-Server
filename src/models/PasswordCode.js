@@ -14,9 +14,6 @@ passwordCodeSchema = new mongoose.Schema({
     inssuanceDate: {
         type: Date,
         required: true
-    },
-    token: {
-        type: String,
     }
 },
 {

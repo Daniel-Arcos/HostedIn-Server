@@ -7,6 +7,26 @@ const sign = (id) => {
     })
 }
 
+const confirmEmailCode = (code) => {
+    return jwt.sign({code :code}, config.SECRET, {
+        expiresIn: 86400
+    })
+}
+
+const verifyToken = (token) => {
+    try {
+        const decoded = jwt.verify(token, config.SECRET);
+        return decoded;
+    } catch (error) {
+        throw {
+            status: 401,
+            message: "Token no valido"
+        }
+    }
+};
+
 module.exports = {
-    sign
+    sign,
+    confirmEmailCode,
+    verifyToken
 }

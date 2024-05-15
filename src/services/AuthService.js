@@ -2,7 +2,7 @@ const { token } = require('morgan')
 const User = require('../models/User')
 const Jwt = require('../Security/Jwt')
 
-const createAccount = async (email, fullName, birthDate, phoneNumber, password) => {
+const createAccount = async (email, fullName, birth, phoneNumber, password) => {
     try {
 
         const userWithEmailFound = await User.findOne({email: email})
@@ -12,7 +12,9 @@ const createAccount = async (email, fullName, birthDate, phoneNumber, password) 
                 status: 400,
                 message: "El correo electrónico o número de telefono ya se encuentra registrado."
             }
-        } else {
+        } else {            
+            const partesFecha = birth.split('/');
+            const birthDate = new Date(partesFecha[2], partesFecha[1] - 1, partesFecha[0]);
             const newUser = new User({
                 email,
                 fullName,
