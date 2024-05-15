@@ -22,16 +22,21 @@ userSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: true
     },
     occupation: {
-        type: String
+        type: String,
+        default: ""
     },
     residence: {
-        type: String
+        type: String,
+        default: ""
     },
     profilePhoto: {
-        type: Buffer
+        type: Buffer,
+        default: {
+            "type": "Buffer",
+            data: []
+        }
     }
 },
 {
