@@ -8,22 +8,18 @@ const sendEmailCode = async (email) => {
     try{
         const userFound = await User.findOne({email: email})
         if(!userFound){
-            console.log("Email no pertenece a nadie.")
             throw {
                 status: 404,
                 message: "Correo electrónico no encontrado"
             }
         }
         else{
-            console.log("Email encontrado. Existe.")
             const currentCode = await PasswordCodes.findOne({ email: email });
             if(currentCode){                
-                if (RecoverPassUtils.is10MinutesAgo(currentCode.inssuanceDate)) {                    
-                    console.log("Ya pasaron 10 min, genera otro.")
+                if (RecoverPassUtils.is10MinutesAgo(currentCode.inssuanceDate)) {  
                     await RecoverPassUtils.sendEmail(email, currentCode)
                 }
                 else{
-                    console.log("Aun no han pasado 10 minutos, codigo pendiente.")
                     throw {
                         status: 200,
                         message: "Existe un codigo de recuperacion vigente."
@@ -31,7 +27,6 @@ const sendEmailCode = async (email) => {
                 }               
             }   
             else{                
-                console.log("No hay registro de codigo de password.")
                 await RecoverPassUtils.sendEmail(email)
             }                    
         }
@@ -47,22 +42,18 @@ const verifyCodeToRecoverPassword = async (code) => {
     try {
         const codeFound = await PasswordCodes.findOne({ code: code })
         if(codeFound){
-            if (RecoverPassUtils.is10MinutesAgo(codeFound.inssuanceDate)) {                    
-                console.log("Ya caduco el codigo, genera otro.")
+            if (RecoverPassUtils.is10MinutesAgo(codeFound.inssuanceDate)) {  
                 throw {
                     status: 400,
                     message: "Codigo expirado, Genere otro"
                 }
             }
             else{
-                console.log("Codigo correcto")
                 const token = Jwt.confirmEmailCode(codeFound.code)
-                console.log(token)
                 return token
             }
         }
         else{
-            console.log("codigo incorrecto")
             throw {
                 status: 401,
                 message: "Codigo incorrecto"
@@ -80,9 +71,9 @@ const changePasswordByCodeRecover = async (newPassword, email) => {
     try {
         const userFound = await User.findOne({email: email})
         if(userFound){
-            userFound.password = await User.encryptPassword(newPassword)
-            console.log(userFound.password)
-            await userFound.save()            
+            userFound.password = await User.encryptPassword(newPassword)            
+            await userFound.save() 
+            await PasswordCodes.deleteOne({email : email})           
         }
         else{
             throw {

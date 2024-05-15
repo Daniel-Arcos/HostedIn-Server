@@ -9,20 +9,16 @@ async function sendEmail(email, codeRegistry){
             let newPasswordCode                 
             const inssuanceDate = new Date()  
             if(codeRegistry == null){       
-                console.log(codeRegistry)
-                console.log(code, email, inssuanceDate)
                 newPasswordCode = new PasswordCodes({
                     email,
                     code, 
                     inssuanceDate
                 })              
-                console.log("Code Registry saved")
             }
             else{
                 newPasswordCode = codeRegistry
                 newPasswordCode.code = code
-                newPasswordCode.inssuanceDate = inssuanceDate                        
-                console.log("Code Registry updated")
+                newPasswordCode.inssuanceDate = inssuanceDate   
             }       
             await newPasswordCode.save();   
         }
@@ -50,7 +46,6 @@ function generateRandomCode() {
 function is10MinutesAgo(inssuanceDate){
     const nowDate = new Date();
     const diffInMilliseconds = nowDate - inssuanceDate;
-    console.log(nowDate, inssuanceDate, diffInMilliseconds)
     const diffInMinutes = diffInMilliseconds / (1000 * 60); 
     return diffInMinutes >= 10    
 }
