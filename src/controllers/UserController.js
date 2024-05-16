@@ -1,5 +1,6 @@
 const UserService = require('../services/UserService')
 const User = require('../models/User')
+const Jwt = require('../Security/Jwt')
 
 const getUserById = async (req, res) => {
     try {
@@ -74,8 +75,79 @@ const deleteUserById = (req, res) => {
 
 }
 
+
+const sendUserEmail = async(req, res) => {
+    try {
+        const {content} = req.body
+        if (!content) {
+            throw {
+                status: 400,
+                message: "Falta el campo correo"
+            }
+        }
+        const email = content
+        result = await UserService.sendUserCode(email)               
+        res.header('Authorization')
+        res.status(200).send({
+            message:"Codigo enviado exitosamente"
+        })
+    } catch (error) {
+        res
+            .status(error?.status || 500)
+            .send({message: error?.message || error});
+    }
+}
+
+const userCodeVerification = async(req, res) => {
+    try {
+        const { content } = req.body
+        if(!content) {
+            throw {
+                status: 400,
+                message: "Falta el campo codigo"
+            }
+        }
+        const code = content
+        result = await UserService.verifyUserCode(code)
+        res.header('Authorization', `Bearer ${result}`)    
+        res.status(200).send({
+            message:"Codigo correcto"
+        })      
+    }
+    catch (error) {
+        res
+            .status(error?.status || 500)
+            .send({message: error?.message || error});
+    }
+}
+
+const updateUserPassword = async(req, res) => {
+    try {
+        const authorization = req.headers.authorization;  
+        if (!authorization) {
+            throw { status: 401, message: 'Authorization header is missing' };
+        }      
+        const decodedToken = Jwt.verifyToken(authorization) 
+        if (!decodedToken) {
+            throw { status: 401, message: 'Invalid token' };
+        }          
+        const {newPassword, email} = req.body 
+        await UserService.updateUserPassword(newPassword, email)
+        res.status(200).send({
+            message:"Contaseña actualizada correctamente"
+        })        
+    } catch (error) {
+        res
+            .status(error?.status || 500)
+            .send({message: error?.message || error});
+    }
+}
+
 module.exports = {
     getUserById,
     updateUserById,
-    deleteUserById
+    deleteUserById,
+    sendUserEmail,
+    userCodeVerification, 
+    updateUserPassword
 }
