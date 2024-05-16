@@ -12,7 +12,9 @@ const createAccount = async (email, fullName, birthDate, phoneNumber, password) 
                 status: 400,
                 message: "El correo electrónico o número de telefono ya se encuentra registrado."
             }
-        } else {
+        } else {            
+            // const partesFecha = birth.split('/');
+            // const birthDate = new Date(partesFecha[2], partesFecha[1] - 1, partesFecha[0]);
             const newUser = new User({
                 email,
                 fullName,

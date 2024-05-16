@@ -9,4 +9,5 @@ router.route("/").get((req, res) => {
 
 router.use("/users", userRoutes)
 router.use("/auth", authRoutes)
+
 module.exports = router
