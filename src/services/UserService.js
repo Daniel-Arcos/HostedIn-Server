@@ -26,6 +26,7 @@ const getUser = async (userId) => {
         const token = Jwt.sign(userFound._id);
 
         return [userFound, token];
+
     } catch (error) {
         throw {
             status: error?.status || 500,
@@ -47,7 +48,6 @@ const editAccount = async (userId, userToEdit) => {
         const userFound = await User.findById(userId);
 
         if (!userFound) {
-            console.log("Usuario no encontrado.")
             throw {
                 status: 404,
                 message: "Usuario no encontrado"
@@ -74,7 +74,48 @@ const editAccount = async (userId, userToEdit) => {
     }
 }
 
+const deleteAccount = async (userId) => {
+    try {
+
+        if (typeof userId !== 'string' || userId.trim() === '' || userId.length !== ID_MONGO_DB_SIZE) {
+            throw {
+                status: 400,
+                message: "El ID proporcionado no es válido."
+            };
+        }
+
+        const userFound = await User.findById(userId);
+
+        if (!userFound) {
+            throw {
+                status: 404,
+                message: "Usuario no encontrado"
+            }
+        }
+
+        const deletedUser = await User.deleteOne({ _id: userId });
+
+        if (deletedUser.deletedCount === 0) {
+            throw {
+                status: 500,
+                message: "Error al eliminar el usuario. Inténtelo de nuevo más tarde."
+            };
+        }
+
+        const token = Jwt.sign(userFound._id);
+
+        return [deletedUser, token]
+
+    } catch (error) {
+        throw {
+            status: error?.status || 500,
+            message: error.message
+        }
+    }
+}
+
 module.exports = { 
     editAccount, 
-    getUser
+    getUser,
+    deleteAccount
 }

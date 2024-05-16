@@ -17,7 +17,6 @@ const getUserById = async (req, res) => {
             user: result[0]
         })
     } catch (error) {
-        console.error("Error al recuperar la cuenta del usuario:", error);
         res.status(error?.status || 500)
             .send({
                 message: error?.message || error
@@ -33,7 +32,7 @@ const updateUserById = async (req, res) => {
             return res.status(400).send({error: "El id del usuario viene nulo"})
         }
 
-        const {email, fullName, birthDate, phoneNumber, occupation, residence, profilePhoto} = req.body
+        const {email, fullName, birthDate, phoneNumber, occupation, residence, profilePhoto} = req.body;
         
         if (email == null ||
             fullName == null ||
@@ -70,8 +69,29 @@ const updateUserById = async (req, res) => {
     }
 }
 
-const deleteUserById = (req, res) => {
+const deleteUserById = async (req, res) => {
+    try {
+        const userId = req.params.userId;
 
+        if (userId == null) {
+            return res.status(400).send({error: "El id del usuario viene nulo"})
+        }
+        
+        const result = await UserService.deleteAccount(userId);
+
+        res.header('Authorization', `Bearer ${result[1]}`);
+        res.status(200).send({
+            userId: userId,
+            message: "Cuenta eliminada con exito"
+        })
+
+    } catch (error) {
+        console.error("Error al eliminar la cuenta:", error);
+        res.status(error?.status || 500)
+            .send({
+                message: error?.message || error
+            })
+    }
 }
 
 module.exports = {
