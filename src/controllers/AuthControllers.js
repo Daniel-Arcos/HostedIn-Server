@@ -1,19 +1,16 @@
 const { token } = require('morgan')
 const UserService = require('../services/AuthService')
+const { validationResult } = require('express-validator')
 
 const signUp = async (req, res) => {
     try {
-        const {email, fullName, birthDate, phoneNumber, password} = req.body
-        if (email == null ||
-            fullName == null ||
-            birthDate == null ||
-            phoneNumber == null ||
-            password == null
-        ) {
-            res.status(400).send({ 
-                error: "Uno de los siguientes campos falta o esta vacio en la peticion: 'email', 'fullName', 'birthDate', 'phoneNumber', 'password'"})
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({
+                errors: errors.array()
+            }); 
         }
-
+        const {email, fullName, birthDate, phoneNumber, password} = req.body
         result = await UserService.createAccount(email, fullName, birthDate, phoneNumber, password);
         const documentoUserJson = result[0].toJSON()
         res.header('Authorization', `Bearer ${result[1]}`);
