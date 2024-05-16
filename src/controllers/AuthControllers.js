@@ -10,7 +10,7 @@ const signUp = async (req, res) => {
             phoneNumber == null ||
             password == null
         ) {
-            res.status(400).send({ 
+            return res.status(400).send({ 
                 error: "Uno de los siguientes campos falta o esta vacio en la peticion: 'email', 'fullName', 'birthDate', 'phoneNumber', 'password'"})
         }
 
