@@ -1,5 +1,6 @@
 const UserService = require('../services/UserService')
 const User = require('../models/User')
+const Jwt = require('../Security/Jwt')
 
 const getUserById = async (req, res) => {
     try {
@@ -17,7 +18,6 @@ const getUserById = async (req, res) => {
             user: result[0]
         })
     } catch (error) {
-        console.error("Error al recuperar la cuenta del usuario:", error);
         res.status(error?.status || 500)
             .send({
                 message: error?.message || error
@@ -33,7 +33,7 @@ const updateUserById = async (req, res) => {
             return res.status(400).send({error: "El id del usuario viene nulo"})
         }
 
-        const {email, fullName, birthDate, phoneNumber, occupation, residence, profilePhoto} = req.body
+        const {email, fullName, birthDate, phoneNumber, occupation, residence, profilePhoto} = req.body;
         
         if (email == null ||
             fullName == null ||
@@ -70,12 +70,104 @@ const updateUserById = async (req, res) => {
     }
 }
 
-const deleteUserById = (req, res) => {
+const deleteUserById = async (req, res) => {
+    try {
+        const userId = req.params.userId;
 
+        if (userId == null) {
+            return res.status(400).send({error: "El id del usuario viene nulo"})
+        }
+        
+        const result = await UserService.deleteAccount(userId);
+
+        res.header('Authorization', `Bearer ${result[1]}`);
+        res.status(200).send({
+            userId: userId,
+            message: "Cuenta eliminada con exito"
+        })
+
+    } catch (error) {
+        console.error("Error al eliminar la cuenta:", error);
+        res.status(error?.status || 500)
+            .send({
+                message: error?.message || error
+            })
+    }
+}
+
+
+const sendUserEmail = async(req, res) => {
+    try {
+        const {content} = req.body
+        if (!content) {
+            throw {
+                status: 400,
+                message: "Falta el campo correo"
+            }
+        }
+        const email = content
+        result = await UserService.sendUserCode(email)               
+        res.header('Authorization')
+        res.status(200).send({
+            message:"Codigo enviado exitosamente"
+        })
+    } catch (error) {
+        res
+            .status(error?.status || 500)
+            .send({message: error?.message || error});
+    }
+}
+
+const userCodeVerification = async(req, res) => {
+    try {
+        const { content } = req.body
+        if(!content) {
+            throw {
+                status: 400,
+                message: "Falta el campo codigo"
+            }
+        }
+        const code = content
+        result = await UserService.verifyUserCode(code)
+        res.header('Authorization', `Bearer ${result}`)    
+        res.status(200).send({
+            message:"Codigo correcto"
+        })      
+    }
+    catch (error) {
+        res
+            .status(error?.status || 500)
+            .send({message: error?.message || error});
+    }
+}
+
+const updateUserPassword = async(req, res) => {
+    try {
+        const authorization = req.headers.authorization;  
+        if (!authorization) {
+            throw { status: 401, message: 'Authorization header is missing' };
+        }      
+        const decodedToken = Jwt.verifyToken(authorization) 
+        if (!decodedToken) {
+            throw { status: 401, message: 'Invalid token' };
+        }          
+        const {newPassword, email} = req.body 
+        await UserService.updateUserPassword(newPassword, email)
+        res.status(200).send({
+            message:"Contaseña actualizada correctamente"
+        })        
+    } catch (error) {
+        res
+            .status(error?.status || 500)
+            .send({message: error?.message || error});
+    }
 }
 
 module.exports = {
     getUserById,
     updateUserById,
-    deleteUserById
+    deleteUserById,
+    sendUserEmail,
+    userCodeVerification, 
+    updateUserPassword
 }
