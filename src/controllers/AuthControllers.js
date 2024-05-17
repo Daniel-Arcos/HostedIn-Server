@@ -7,24 +7,25 @@ const signUp = async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({
-                errors: errors.array()
+                errors: errors.array(),
+                message: "Uno de los siguientes campos falta o esta vacio en la peticion: 'email', 'fullName', 'birthDate', 'phoneNumber', 'password'"
             }); 
         }
         const {email, fullName, birthDate, phoneNumber, password} = req.body
         result = await UserService.createAccount(email, fullName, birthDate, phoneNumber, password);
         const documentoUserJson = result[0].toJSON()
         res.header('Authorization', `Bearer ${result[1]}`);
-        res.status(200).send({
+        return res.status(200).send({
             message: "Cuenta creada exitosamente",
             user: {
                 email: documentoUserJson.email,
                 fullName: documentoUserJson.fullName,
                 phoneNumber: documentoUserJson.phoneNumber,
-                id: documentoUserJson._id
+                _id: documentoUserJson._id
             }
         })
     } catch (error) {
-        res
+        return res
             .status(error?.status || 500)
             .send({message: error?.message || error});
     }
@@ -44,17 +45,17 @@ const signIn = async (req, res) => {
         result = await UserService.signIn(email, password);
         const documentoUserJson = result[0].toJSON()
         res.header('Authorization', `Bearer ${result[1]}`);
-        res.status(200).send({
+        return res.status(200).send({
             message: "Inicio de sesion exitoso",
             user: {
                 email: documentoUserJson.email,
                 fullName: documentoUserJson.fullName,
                 phoneNumber: documentoUserJson.phoneNumber,
-                id: documentoUserJson._id
+                _id: documentoUserJson._id
             }
         })
     } catch (error) {
-        res
+        return res
             .status(error?.status || 500)
             .send({message: error?.message || error});
     }
