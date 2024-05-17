@@ -25,7 +25,6 @@ const createAccount = async (email, fullName, birthDate, phoneNumber, password) 
     
             const savedUser = await newUser.save();
             const token = Jwt.sign(savedUser._id)
-            console.log(token)
             return [savedUser, token]
         }
     } catch (error) {

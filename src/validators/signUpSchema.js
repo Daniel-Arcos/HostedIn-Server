@@ -27,9 +27,6 @@ const signUpSchema = {
     birthDate: {
         exists: {
             errorMessage: 'Birth date cannot be null'
-        }, 
-        isDate: {
-            errorMessage: 'Birth date must be a valid date'
         }
     },
     phoneNumber: {
