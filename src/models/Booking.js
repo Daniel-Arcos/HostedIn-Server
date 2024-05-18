@@ -31,6 +31,14 @@ bookingShcema = new mongoose.Schema({
         unique: true,
         required: true
     },
+    guestName: {
+        type: String,
+        required : true
+    },
+    hostName: {
+        type: String,
+        required : true
+    }
 },
 {
     timeseries: true,

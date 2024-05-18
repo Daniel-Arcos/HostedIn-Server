@@ -1,4 +1,5 @@
 const Booking = require('../models/Booking')
+const User = require('../models/User')
 const ID_MONGO_DB_SIZE = 24;
 
 const saveBooking = async(accommodationId, beginningDate, endingDate, numberOfGuests, totalCost, bookingStatus, guestUserId) => {
@@ -6,22 +7,24 @@ const saveBooking = async(accommodationId, beginningDate, endingDate, numberOfGu
         const bookingFound = await Booking.findOne({accommodationId: accommodationId, guestUserId: guestUserId})
         if(bookingFound){
             throw{ status: 400, message:"Y existe una reservacion de este usuario para este alojamiento" }
-        }
-        //TO-DO : VERIFICAR QUE ESA FEHCAS NO ESTEN RESERVADAS
-        else{
-            const newBooking = new Booking({
-                accommodationId, 
-                beginningDate, 
-                endingDate,
-                numberOfGuests,
-                totalCost, 
-                bookingStatus,
-                guestUserId
-            })
+        }        
+        //TO-DO : VERIFICAR QUE ESA FEHCAS NO ESTEN RESERVADAS               
+        const usersNames = await getHostAndGuestNames(accommodationId, guestUserId)
+        const newBooking = new Booking({
+            accommodationId, 
+            beginningDate, 
+            endingDate,
+            numberOfGuests,
+            totalCost, 
+            bookingStatus,
+            guestUserId,
+            guestUserName: usersNames[0],
+            hostName: usersNames[1]
+        })
 
-            const savedBooking = await newBooking.save()
-            return savedBooking
-        }
+        const savedBooking = await newBooking.save()
+        return savedBooking
+        
     } catch (error) {
         throw {
             status: error?.status || 500,
@@ -38,11 +41,14 @@ const updateBooking = async(bookingId, accommodationId, beginningDate, endingDat
             throw{ status: 404, message:"la reservacion no existe " }
         }else{
            
+            const usersNames = await getHostAndGuestNames(accommodationId, guestUserId)
             foundBooking.beginningDate = beginningDate 
             foundBooking.endingDate = endingDate
             foundBooking.numberOfGuests = numberOfGuests
             foundBooking.totalCost = totalCost 
             foundBooking.bookingStatus = bookingStatus
+            foundBooking.guetName = usersNames[0]
+            foundBooking.hostName = usersNames[1]
             
             await foundBooking.save()     
         }
@@ -54,10 +60,23 @@ const updateBooking = async(bookingId, accommodationId, beginningDate, endingDat
     }
 }
 
+
+async function getHostAndGuestNames(accommodationId, guestUserId){
+    const guestUserName = await User.findById(guestUserId).fullName
+    if(!guestUserName){ throw{ status: 400, message:"BNo existe el husped ne la BD" } }
+    
+    const accommodationFound = await User.findById(accommodationId)
+    if(!accommodationFound){ throw{ status: 400, message:"El alojamiento no existe" } }
+
+    //const hostUserName = await User.findById(accommodationFound.userId)
+    if(!hostUserName){ throw{ status: 400, message:"El host no existe" } }
+
+    return {guestUserName, hostUserName}
+}
+
 const getBooking = async(bookingId) => {
     try {
         foundBooking = await Booking.findById(bookingId)
-        //TO-DO FIND Accomodattion data.
         if(!foundBooking) {
             throw{ status: 404, message:"la reservacion no existe " }
         }

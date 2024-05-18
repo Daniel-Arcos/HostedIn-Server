@@ -35,9 +35,6 @@ const updateBookingSchema ={
     beginningDate:{
         exists: {
             errorMessage: 'beginningDate cannot be null'
-        }, 
-        isISOString: {
-            errorMessage: 'beginningDate must be a string'
         },
         notEmpty: {
             errorMessage: 'beginningDate cannot be empty'
@@ -54,9 +51,6 @@ const updateBookingSchema ={
         exists: {
             errorMessage: 'endingDate cannot be null'
         }, 
-        isISOString: {
-            errorMessage: 'endingDate must be a string'
-        },
         notEmpty: {
             errorMessage: 'endingDate cannot be empty'
         },
@@ -72,7 +66,7 @@ const updateBookingSchema ={
         exists: {
             errorMessage: 'numberOfGuest cannot be null'
         }, 
-        isNumber: {
+        isNumeric: {
             errorMessage: 'numberOfGuest must be a string'
         },
         notEmpty: {
@@ -83,7 +77,7 @@ const updateBookingSchema ={
         exists: {
             errorMessage: 'totalCost cannot be null'
         }, 
-        isNumber: {
+        isNumeric: {
             errorMessage: 'totalCost must be a string'
         },
         notEmpty: {
