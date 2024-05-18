@@ -1,6 +1,8 @@
 const express = require('express')
 const userController = require('../../controllers/UserController.js')
 const router = express.Router()
+const { checkSchema } = require('express-validator')
+const { changePasswordSchema } = require('../../validators/changePasswordShcema.js')
 
 
 router.get('/', (req, res) => {
@@ -9,8 +11,8 @@ router.get('/', (req, res) => {
 router.get('/:userId', userController.getUserById)
 router.put('/:userId', userController.updateUserById)
 router.delete('/:userId', userController.deleteUserById)
-router.post('/password', userController.sendUserEmail)
-router.post('/password/code', userController.userCodeVerification)
-router.patch('/password', userController.updateUserPassword)
+router.post('/passwords', userController.sendUserEmail)
+router.post('/passwords/code', userController.userCodeVerification)
+router.patch('/passwords', checkSchema(changePasswordSchema), userController.updateUserPassword)
 
 module.exports = router

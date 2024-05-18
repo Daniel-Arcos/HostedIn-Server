@@ -1,11 +1,11 @@
 const UserService = require('../services/UserService')
 const User = require('../models/User')
 const Jwt = require('../Security/Jwt')
+const { validationResult } = require('express-validator')
 
 const getUserById = async (req, res) => {
     try {
         const userId = req.params.userId;
-
         if (userId == null) {
             return res.status(400).send({error: "El id del usuario 'userId' viene nulo"})
         }
@@ -143,15 +143,26 @@ const userCodeVerification = async(req, res) => {
 
 const updateUserPassword = async(req, res) => {
     try {
+
         const authorization = req.headers.authorization;  
         if (!authorization) {
             throw { status: 401, message: 'Authorization header is missing' };
         }      
-        const decodedToken = Jwt.verifyToken(authorization) 
-        if (!decodedToken) {
-            throw { status: 401, message: 'Invalid token' };
-        }          
+        Jwt.verifyToken(authorization)  
+        
+        
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) {
+            console.log(errors)
+            throw { status : 400,
+                
+                errors: errors.array(),
+                message: "Uno de los siguientes campos falta o esta vacio en la peticion: 'email', 'password'"
+            }
+        }
+        
         const {newPassword, email} = req.body 
+        
         await UserService.updateUserPassword(newPassword, email)
         res.status(200).send({
             message:"Contaseña actualizada correctamente"

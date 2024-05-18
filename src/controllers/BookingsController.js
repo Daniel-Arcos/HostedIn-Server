@@ -1,13 +1,26 @@
 const BookingService = require('../services/BookingService')
 const BookingStatus = require('../models/BookingStatus')
 const Jwt = require('../Security/Jwt')
+const { validationResult } = require('express-validator')
 
 
 const createBooking = async(req, res) =>{
     try {
-        //schema de verificaicon de campos nulos
-        const {accommodationId, beginningDate, endingDate, numberOfGuests, totalCost, bookingStatus, guestUserId} = req.body
-        //TO-DO Obtener userId: userId = 
+        // const authorization = req.headers.authorization;  
+        // if (!authorization) {
+        //     throw { status: 401, message: 'Authorization header is missing' };
+        // }      
+        // Jwt.verifyToken(authorization) 
+
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) {
+            throw { status : 400,
+                errors: errors.array(),
+                message: "Uno de los siguientes campos falta o esta vacio en la peticion: accommodationId, beginningDate, endingDate, numberOfGuests, totalCost, bookingStatus, guestUserId"
+            }
+        }
+
+        const {accommodationId, beginningDate, endingDate, numberOfGuests, totalCost, bookingStatus, guestUserId} = req.body        
         const beginDate =  new Date(beginningDate)
         const endDate = new Date(endingDate)        
         const currentDate = new Date()
@@ -17,20 +30,12 @@ const createBooking = async(req, res) =>{
         if(beginDate < currentDate){
             throw{ status: 400, message:"La fecha de inicio es previa a la fecha actual" }
         }
-        result = await BookingService.saveBooking(accommodationId, beginningDate, endingDate, numberOfGuests, totalCost, BookingStatus.CURRENT, guestUserId, userId)
-        const documentBookingJson = result[0].toJSON()
-        res.header('Authorization', `Bearer ${result[1]}`);
+       
+        result = await BookingService.saveBooking(accommodationId, beginningDate, endingDate, numberOfGuests, totalCost, BookingStatus.CURRENT, guestUserId)
+        const documentBookingJson = result.toJSON()
         res.status(200).send({
             message: "Reservacion creada exitosamente",
-            booking: {
-                accommodationId : documentBookingJson.accommodationId,
-                beginningDate : documentBookingJson.beginningDate,
-                endingDate : documentBookingJson.endingDate,
-                numberOfGuests : documentBookingJson.numberOfGuests,
-                totalCost : documentBookingJson.totalCost ,
-                bookingStatus : documentBookingJson.bookingStatus,
-                guestUserId : documentBookingJson.guestUserId              
-            }
+            booking: result
         })
     } catch (error) {
         res
@@ -41,9 +46,21 @@ const createBooking = async(req, res) =>{
 
 const editBooking = async(req, res) => {
     try {
-        //schema de verificaicon de campos nulos
+        // const authorization = req.headers.authorization;  
+        // if (!authorization) {
+        //     throw { status: 401, message: 'Authorization header is missing' };
+        // }      
+        // Jwt.verifyToken(authorization) 
+
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) {
+            throw { status : 400,
+                errors: errors.array(),
+                message: "Uno de los siguientes campos falta o esta vacio en la peticion: accommodationId, beginningDate, endingDate, numberOfGuests, totalCost, bookingStatus, guestUserId"
+            }
+        }
+        const bookingId = req.params.bookingId
         const {accommodationId, beginningDate, endingDate, numberOfGuests, totalCost, bookingStatus, guestUserId} = req.body
-        //TO-DO Obtener userId: userId =
         const beginDate =  new Date(beginningDate)
         const endDate = new Date(endingDate)
         const currentDate = new Date()
@@ -53,9 +70,8 @@ const editBooking = async(req, res) => {
         if(beginDate < currentDate){
             throw{ status: 400, message:"La fecha de inicio es previa a la fecha actual" }
         } 
-        result = await BookingService.updateBooking(accommodationId, beginningDate, endingDate, numberOfGuests, totalCost, BookingStatus.CURRENT, guestUserId, userId)
-        
-        res.header('Authorization', `Bearer ${result}`);
+
+        await BookingService.updateBooking(bookingId,accommodationId, beginningDate, endingDate, numberOfGuests, totalCost, BookingStatus.CURRENT, guestUserId)
         res.status(200).send({
             message: "Reservacion actualizada exitosamente"
         })
@@ -68,28 +84,21 @@ const editBooking = async(req, res) => {
 
 const getBookingById = async(req, res) => {
     try {
-        //schema de verificaicon de campos nulos
+        // const authorization = req.headers.authorization;  
+        // if (!authorization) {
+        //     throw { status: 401, message: 'Authorization header is missing' };
+        // }      
+        // Jwt.verifyToken(authorization) 
+
         const bookingId = req.params.bookingId
         if (bookingId == null) {
             return res.status(400).send({error: "El id viene nulo"})
         }
-        //TO-DO Obtener userId: userId =
-        result = await BookingService.getBooking(bookingId, userId)
-        
-        //const documentBookingJson = result[0].toJSON()
-        res.header('Authorization', `Bearer ${result[1]}`);
+       
+        result = await BookingService.getBooking(bookingId)     
         res.status(200).send({
             message: "Reservacion recuperada exitosamente",
-            booking: result[0]
-            // {
-            //     accommodationId : documentBookingJson.accommodationId,
-            //     beginningDate : documentBookingJson.beginningDate,
-            //     endingDate : documentBookingJson.endingDate,
-            //     numberOfGuests : documentBookingJson.numberOfGuests,
-            //     totalCost : documentBookingJson.totalCost ,
-            //     bookingStatus : documentBookingJson.bookingStatus,
-            //     guestUserId : documentBookingJson.guestUserId              
-            // }
+            booking: result
         })
     } catch (error) {
         res
@@ -100,19 +109,21 @@ const getBookingById = async(req, res) => {
 
 const getBookingByAccommodationId = async(req, res) => {
     try {
-        //schema de verificaicon de campos nulos
+        // const authorization = req.headers.authorization;  
+        // if (!authorization) {
+        //     throw { status: 401, message: 'Authorization header is missing' };
+        // }      
+        // Jwt.verifyToken(authorization) 
+        
         const accommodationId = req.params.accommodationId
         if (accommodationId == null) {
-            return res.status(400).send({error: "El  viene nulo"})
+            return res.status(401).send({error: "El  viene nulo"})
         }
-        //TO-DO Obtener userId: userId =
-        result = await BookingService.getBookingByAccommodationId(accommodationId, userId)
-        
-        //const documentBookingJson = result[0].toJSON()
-        res.header('Authorization', `Bearer ${result[1]}`);
+       
+        result = await BookingService.getAllBookingsByAccommodation(accommodationId)
         res.status(200).send({
             message: "Reservaciones recuperadas exitosamente",
-            bookings: result.bookings.map(booking => booking.toJSON)           
+            bookings: result          
         })
     } catch (error) {
         res
@@ -123,13 +134,17 @@ const getBookingByAccommodationId = async(req, res) => {
 
 const deleteBookingById = async(req, res) => {
     try {        
+        // const authorization = req.headers.authorization;  
+        // if (!authorization) {
+        //     throw { status: 401, message: 'Authorization header is missing' };
+        // }      
+        // Jwt.verifyToken(authorization) 
+
         const bookingId = req.params.bookingId
         if (bookingId == null) {
             return res.status(400).send({error: "El viene nulo"})
         }
-        //TO-DO Obtener userId: userId =
-        result = await BookingService.deleteBooking(bookingId, userId)
-        res.header('Authorization', `Bearer ${result}`);
+        await BookingService.deleteBooking(bookingId)
         res.status(200).send({
             message: "Reservacion eliminada exitosamente",         
         })

@@ -1,7 +1,7 @@
 const Booking = require('../models/Booking')
-const Jwt = require('../Security/Jwt')
+const ID_MONGO_DB_SIZE = 24;
 
-const saveBooking = async(accommodationId, beginningDate, endingDate, numberOfGuests, totalCost, bookingStatus, guestUserId, userId) => {
+const saveBooking = async(accommodationId, beginningDate, endingDate, numberOfGuests, totalCost, bookingStatus, guestUserId) => {
     try {        
         const bookingFound = await Booking.findOne({accommodationId: accommodationId, guestUserId: guestUserId})
         if(bookingFound){
@@ -20,8 +20,7 @@ const saveBooking = async(accommodationId, beginningDate, endingDate, numberOfGu
             })
 
             const savedBooking = await newBooking.save()
-            const token = Jwt.sign(userId);
-            return [savedBooking,token]
+            return savedBooking
         }
     } catch (error) {
         throw {
@@ -31,11 +30,8 @@ const saveBooking = async(accommodationId, beginningDate, endingDate, numberOfGu
     }
 }
 
-const updateBooking = async(bookingId, accommodationId, beginningDate, endingDate, numberOfGuests, totalCost, bookingStatus, guestUserId, userId) => {
-    try {
-        if (typeof bookingId !== 'string' || bookingId.trim() === '' || bookingId.length !== ID_MONGO_DB_SIZE) {
-            throw { status: 400, message: "El ID proporcionado no es válido." }
-        }         
+const updateBooking = async(bookingId, accommodationId, beginningDate, endingDate, numberOfGuests, totalCost, bookingStatus, guestUserId) => {
+    try {         
         //TO-DO : VERIFICAR QUE ESA FEHCAS NO ESTEN RESERVADAS       
         foundBooking = await Booking.findById(bookingId)
         if(!foundBooking) {
@@ -48,9 +44,7 @@ const updateBooking = async(bookingId, accommodationId, beginningDate, endingDat
             foundBooking.totalCost = totalCost 
             foundBooking.bookingStatus = bookingStatus
             
-            await foundBooking.save()            
-            const token = Jwt.sign(userId)
-            return token
+            await foundBooking.save()     
         }
     } catch (error) {
         throw {
@@ -60,17 +54,14 @@ const updateBooking = async(bookingId, accommodationId, beginningDate, endingDat
     }
 }
 
-const getBooking = async(bookingId, userId) => {
+const getBooking = async(bookingId) => {
     try {
-        if (typeof bookingId !== 'string' || bookingId.trim() === '' || bookingId.length !== ID_MONGO_DB_SIZE) {
-            throw { status: 400, message: "El ID proporcionado no es válido." }
-        }
         foundBooking = await Booking.findById(bookingId)
+        //TO-DO FIND Accomodattion data.
         if(!foundBooking) {
             throw{ status: 404, message:"la reservacion no existe " }
         }
-        const token = Jwt.sign(userId)
-        return [foundBooking, token]
+        return foundBooking
     } catch (error) {
         throw {
             status: error?.status || 500,
@@ -79,17 +70,13 @@ const getBooking = async(bookingId, userId) => {
     }
 }
 
-const getAllBookingsByAccommodation = async (accommodationId, userId)=> {
+const getAllBookingsByAccommodation = async (accommodationId)=> {
     try {
-        if (typeof accommodationId !== 'string' || accommodationId.trim() === '' || accommodationId.length !== ID_MONGO_DB_SIZE) {
-            throw { status: 400, message: "El ID proporcionado no es válido." }
-        }
-        foundBookings = await Booking.find({idAccommodation : idAccommodation})
-        if(!foundBooking) {
+        foundBookings = await Booking.find({accommodationId : accommodationId})
+        if(!foundBookings) {
             throw{ status: 404, message:"No hay reservaciones para este alojamiento" }
         }
-        const token = Jwt.sign(userId)
-        return {bookings: foundBookings, token}
+        return {bookings: foundBookings}
     } catch (error) {
         throw {
             status: error?.status || 500,
@@ -100,9 +87,6 @@ const getAllBookingsByAccommodation = async (accommodationId, userId)=> {
 
 const deleteBooking = async(bookingId) => {
     try {
-        if (typeof bookingId !== 'string' || bookingId.trim() === '' || bookingId.length !== ID_MONGO_DB_SIZE) {
-            throw { status: 400, message: "El ID proporcionado no es válido." }
-        }
         const bookingFound = await Booking.findById(bookingId)
         const beginDate =  new Date(bookingFound.beginningDate)               
         const currentDate = new Date()
@@ -111,9 +95,7 @@ const deleteBooking = async(bookingId) => {
         if (differenceInDays <= 1) {
             throw { status: 400, message: "La fecha de inicio es en menos de un día, no se puede cancelar" };
         }
-        await Booking.deleteOne({idAccommodation : idAccommodation})    
-        const token = Jwt.sign(userIde)
-        return token
+        await Booking.deleteOne({_id : bookingId})    
     } catch (error) {
         throw {
             status: error?.status || 500,

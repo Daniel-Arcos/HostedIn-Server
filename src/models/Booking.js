@@ -15,11 +15,11 @@ bookingShcema = new mongoose.Schema({
         required: true
     },
     numberOfGuests: {
-        type: Int32Array, 
+        type: Number, 
         required: true
     },
     totalCost: {
-        type: Int32Array, 
+        type: Number, 
         required: true
     },
     bookingStatus: {
