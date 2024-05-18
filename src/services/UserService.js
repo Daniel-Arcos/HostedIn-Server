@@ -46,8 +46,12 @@ const editAccount = async (userId, userToEdit) => {
                 message: "El ID proporcionado no es válido."
             };
         }
-
-        const userFound = await User.findById(userId);
+        if (userToEdit.password) {
+            userToEdit.password = await User.encryptPassword(userToEdit.password)
+        }
+        const userFound = await User.findByIdAndUpdate(userId, userToEdit, {
+            new: true,
+        });
 
         if (!userFound) {
             throw {
@@ -56,18 +60,9 @@ const editAccount = async (userId, userToEdit) => {
             }
         }
 
-        userFound.fullName = userToEdit.fullName;
-        userFound.birthDate = userToEdit.birthDate;
-        userFound.phoneNumber = userToEdit.phoneNumber;
-        userFound.occupation = userToEdit.occupation;
-        userFound.residence = userToEdit.residence;
-        userFound.profilePhoto = userToEdit.profilePhoto;
-
-        const editedUser = await userFound.save();
-
         const token = Jwt.sign(userFound._id);
 
-        return [editedUser, token]
+        return [userFound, token]
     } catch (error) {
         throw {
             status: error?.status || 500,
