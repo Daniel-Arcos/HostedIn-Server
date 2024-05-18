@@ -33,8 +33,8 @@ const updateUserById = async (req, res) => {
             return res.status(400).send({error: "El id del usuario viene nulo"})
         }
 
-        const {email, fullName, birthDate, phoneNumber, occupation, residence, profilePhoto} = req.body;
-        
+        const {email, fullName, birthDate, phoneNumber, occupation, residence, profilePhoto, password} = req.body;
+
         if (email == null ||
             fullName == null ||
             birthDate == null ||
@@ -45,21 +45,23 @@ const updateUserById = async (req, res) => {
             })
         }
 
-        const userToEdit = new User({
+        const userToEdit = {
             email,
             fullName,
             birthDate,
             phoneNumber,
+            password,
             occupation,
             residence,
             profilePhoto
-        })
+        }
         
         const result = await UserService.editAccount(userId, userToEdit);
 
         res.header('Authorization', `Bearer ${result[1]}`);
         res.status(200).send({
-            message: "Cuenta actualizada con exito"
+            message: "Cuenta actualizada con exito",
+            user: result[0]
         })
     } catch (error) {
         console.error("Error al actualizar la cuenta:", error);
