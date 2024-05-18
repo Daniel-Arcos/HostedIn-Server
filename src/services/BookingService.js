@@ -18,8 +18,8 @@ const saveBooking = async(accommodationId, beginningDate, endingDate, numberOfGu
             totalCost, 
             bookingStatus,
             guestUserId,
-            guestUserName: usersNames[0],
-            hostName: usersNames[1]
+            guestName: usersNames.guestUserName.fullName,
+            hostName: "usersNames[1]"
         })
 
         const savedBooking = await newBooking.save()
@@ -47,8 +47,8 @@ const updateBooking = async(bookingId, accommodationId, beginningDate, endingDat
             foundBooking.numberOfGuests = numberOfGuests
             foundBooking.totalCost = totalCost 
             foundBooking.bookingStatus = bookingStatus
-            foundBooking.guetName = usersNames[0]
-            foundBooking.hostName = usersNames[1]
+            foundBooking.guetName = usersNames.guestUserName.fullName
+            foundBooking.hostName = "usersNames[1]"
             
             await foundBooking.save()     
         }
@@ -62,14 +62,14 @@ const updateBooking = async(bookingId, accommodationId, beginningDate, endingDat
 
 
 async function getHostAndGuestNames(accommodationId, guestUserId){
-    const guestUserName = await User.findById(guestUserId).fullName
+    const guestUserName = await User.findById(guestUserId)
     if(!guestUserName){ throw{ status: 400, message:"BNo existe el husped ne la BD" } }
     
-    const accommodationFound = await User.findById(accommodationId)
-    if(!accommodationFound){ throw{ status: 400, message:"El alojamiento no existe" } }
+    // const accommodationFound = await User.findById(accommodationId)
+    // if(!accommodationFound){ throw{ status: 400, message:"El alojamiento no existe" } }
 
-    //const hostUserName = await User.findById(accommodationFound.userId)
-    if(!hostUserName){ throw{ status: 400, message:"El host no existe" } }
+    const hostUserName = await User.findById(guestUserId)
+    // if(!hostUserName){ throw{ status: 400, message:"El host no existe" } }
 
     return {guestUserName, hostUserName}
 }
