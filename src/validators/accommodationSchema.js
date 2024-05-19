@@ -93,12 +93,9 @@ const accommodationSchema = {
             errorMessage: 'Location must be an object'
         }
     },
-    userId: {
+    user: {
         exists: {
             errorMessage: 'User cannot be null'
-        },
-        isString: {
-            errorMessage: 'User must be a string'
         }
     }
 }

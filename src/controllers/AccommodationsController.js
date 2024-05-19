@@ -4,10 +4,14 @@ const { validationResult } = require('express-validator')
 
 const getAccommodations = async (req, res) => {
     try {
-        const { lat, long } = req.query;
+        const { lat, long, id } = req.query;
         let result
-        if (lat && long) {
-            result = await AccommodationService.getAccommodationsByLocation(lat, long)
+        if (id) {
+            if (lat && long) {
+                result = await AccommodationService.getAccommodationsByLocationAndId(lat, long, id)
+            } else {
+                result = await AccommodationService.getAllAccommodations(id)   
+            }
         } else {
             result = await AccommodationService.getAllAccommodations()
         }
@@ -26,6 +30,7 @@ const createAccommodation = async (req, res) => {
 
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
+            console.log(errors)
             return res.status(400).json({
                 errors: errors.array(),
                 message: "Uno de los siguientes campos falta o esta vacio en la peticion: 'title', 'description', 'accommodationType', 'nightPrice', 'guestsNumber', 'roomsNumber', 'bedsNumber', 'bathroomsNumber', 'location'"
@@ -49,7 +54,7 @@ const createAccommodation = async (req, res) => {
                 type: 'Point',
                 coordinates: [location.longitude, location.latitude]
             },
-            userId: req.body.userId
+            user: req.body.user._id
         };
 
         result = await AccommodationService.createAccommodation(newAccommodation);
