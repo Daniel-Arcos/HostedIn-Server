@@ -57,4 +57,6 @@ accommodationSchema = new mongoose.Schema({
     versionKey: false,
 });
 
+accommodationSchema.index({ "location": "2dsphere"});
+
 module.exports = model("accomodations", accommodationSchema)
