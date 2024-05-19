@@ -2,12 +2,13 @@ const mongoose = require('mongoose');
 const model = mongoose.model;
 
 locationSchema = new mongoose.Schema({
-    latitude: {
-        type: Number,
+    type: {
+        type: String,
+        enum: ['Point'],
         required: true
     },
-    longitude: {
-        type: Number,
+    coordinates: {
+        type: [Number],
         required: true
     }
 },

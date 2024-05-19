@@ -6,10 +6,8 @@ const { checkSchema } = require('express-validator')
 const { accommodationSchema } = require('../../validators/accommodationSchema.js')
 
 router.post('/', checkSchema(accommodationSchema), accommodationsController.createAccommodation)
-//TODO: router.get('/', accommodationsController.getAllAccommodations)
-//TODO: router.get('/:accommodationId', accommodationsController.getAccommodationById)
 router.get('/:accommodationId/bookings', bookingController.getBookingByAccommodationId)
-
+router.get('/', accommodationsController.getAccommodations)
 
 
 module.exports = router
