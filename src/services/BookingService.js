@@ -19,7 +19,7 @@ const saveBooking = async(accommodationId, beginningDate, endingDate, numberOfGu
             bookingStatus,
             guestUserId,
             guestName: usersNames.guestUserName.fullName,
-            hostName: "usersNames[1]"
+            hostName: "usersNames"
         })
 
         const savedBooking = await newBooking.save()
@@ -48,7 +48,7 @@ const updateBooking = async(bookingId, accommodationId, beginningDate, endingDat
             foundBooking.totalCost = totalCost 
             foundBooking.bookingStatus = bookingStatus
             foundBooking.guetName = usersNames.guestUserName.fullName
-            foundBooking.hostName = "usersNames[1]"
+            foundBooking.hostName = "usersNames"
             
             await foundBooking.save()     
         }
