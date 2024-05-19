@@ -107,8 +107,7 @@ const getBookingByAccommodationId = async(req, res) => {
             result = allBookingsFound
         }
         res.status(200).send({
-            message: "Reservaciones recuperadas exitosamente",
-            bookings: result          
+            bookingsList: result          
         })
     } catch (error) {
         res
