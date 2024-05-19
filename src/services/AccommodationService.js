@@ -2,7 +2,7 @@ const { token } = require('morgan')
 const Accommodation = require('../models/Accommodation')
 const Jwt = require('../Security/Jwt')
 
-const getAccommodationsByLocation = async (lat, long) => {
+const getAccommodationsByLocationAndId = async (lat, long, id) => {
     try {
         const filteredAccomodations = await Accommodation.find({
             location: {
@@ -13,8 +13,9 @@ const getAccommodationsByLocation = async (lat, long) => {
                     },
                     $maxDistance: 8000
                 }
-            }
-        })
+            },
+            user: { $ne: id }
+        }).populate('userId')
         return filteredAccomodations
     } catch (error) {
         throw {
@@ -25,9 +26,23 @@ const getAccommodationsByLocation = async (lat, long) => {
     
 }
 
-const getAllAccommodations = async () => {
+const getAllAccommodations = async (id) => {
     try {
-        const allAccommodations = await Accommodation.find()
+
+        let allAccommodations
+        if (id) {
+            allAccommodations = await Accommodation.find({
+                user: { $ne: id }
+            }).populate({
+                path: 'user',
+                select: '-password' 
+            })
+        } else {
+            allAccommodations =  await Accommodation.find().populate({
+                path: 'user',
+                select: '-password' 
+            })
+        }
         return allAccommodations
     } catch (error) {
         throw {
@@ -66,5 +81,5 @@ const createAccommodation = async (accommodation) => {
 module.exports = { 
     createAccommodation,
     getAllAccommodations,
-    getAccommodationsByLocation
+    getAccommodationsByLocationAndId
 }

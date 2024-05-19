@@ -47,8 +47,9 @@ accommodationSchema = new mongoose.Schema({
         type: locationSchema,
         required: true
     },
-    userId: {
-        type: String,
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'users', 
         required: true
     }
 },
