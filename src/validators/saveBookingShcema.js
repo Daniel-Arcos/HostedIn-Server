@@ -1,20 +1,10 @@
 const { body, checkSchema, validationResult } = require('express-validator')
 const ID_MONGO_DB_SIZE = 24;
 
-const saveBookingSchema ={
+const saveBookingSchema = {
     accommodationId: {
         exists: {
-            errorMessage: 'accommodationId cannot be null'
-        }, 
-        isString: {
-            errorMessage: 'accommodationId must be a string'
-        },
-        notEmpty: {
-            errorMessage: 'accommodationId cannot be empty'
-        },           
-        custom: {
-            options: (value) => value.length === ID_MONGO_DB_SIZE,
-            errorMessage: `accommodationId is not valid`
+            errorMessage: 'accommodation cannot be null'
         }
     },
     beginningDate:{
@@ -29,7 +19,7 @@ const saveBookingSchema ={
                 const date = new Date(value);
                 return !isNaN(date.getTime());
             },
-            errorMessage: 'beginningngDate must be a valid date'
+            errorMessage: 'beginningDate must be a valid date'
         }
     },
     endingDate:{
@@ -52,7 +42,7 @@ const saveBookingSchema ={
             errorMessage: 'numberOfGuest cannot be null'
         }, 
         isNumeric: {
-            errorMessage: 'numberOfGuest must be a string'
+            errorMessage: 'numberOfGuest must be a number'
         },
         notEmpty: {
             errorMessage: 'numberOfGuest cannot be empty'
@@ -63,7 +53,7 @@ const saveBookingSchema ={
             errorMessage: 'totalCost cannot be null'
         }, 
         isNumeric: {
-            errorMessage: 'totalCost must be a string'
+            errorMessage: 'totalCost must be a number'
         },
         notEmpty: {
             errorMessage: 'totalCost cannot be empty'
@@ -71,33 +61,32 @@ const saveBookingSchema ={
     },
     bookingStatus:{
         exists: {
-            errorMessage: 'bookinStatus cannot be null'
+            errorMessage: 'bookingStatus cannot be null'
         }, 
         isString: {
-            errorMessage: 'bookinStatus must be a string'
+            errorMessage: 'bookingStatus must be a string'
         },
         notEmpty: {
-            errorMessage: 'bookinStatus cannot be empty'
+            errorMessage: 'bookingStatus cannot be empty'
         }
     },
-    guestUserId: {
+    guestUser: {
         exists: {
-            errorMessage: 'guestUserId cannot be null'
-        }, 
-        isString: {
-            errorMessage: 'guestUserId must be a string'
-        },
-        notEmpty: {
-            errorMessage: 'guestUserId cannot be empty'
-        },           
-        custom: {
-            options: (value) => value.length === ID_MONGO_DB_SIZE,
-            errorMessage: `guestUserId is not valid`
+            errorMessage: 'User cannot be null'
         }
+    },
+    hostUser: {
+        exists: {
+            errorMessage: 'User cannot be null'
+        }
+        // ,           
+        // custom: {
+        //     options: (value) => value.length === ID_MONGO_DB_SIZE,
+        //     errorMessage: 'hosttUserId is not valid'
+        // }
     }
 
 }
-
 
 module.exports = {
     saveBookingSchema

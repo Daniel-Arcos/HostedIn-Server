@@ -7,31 +7,44 @@ const ConsultorTypes = {
     GUEST: "Guest"
 }
 
-
 const createBooking = async(req, res) =>{
     try {
+
         const errors = validationResult(req)
         if (!errors.isEmpty()) {
+            console.log(errors)
             throw { status : 400,
                 errors: errors.array(),
                 message: "Uno de los siguientes campos falta o esta vacio en la peticion: accommodationId, beginningDate, endingDate, numberOfGuests, totalCost, bookingStatus, guestUserId"
             }
         }
-        const {accommodationId, beginningDate, endingDate, numberOfGuests, totalCost, bookingStatus, guestUserId, guestName, hostName} = req.body        
-        const beginDate =  new Date(beginningDate)
-        const endDate = new Date(endingDate)        
+
+
+        const { accommodationId, beginningDate, endingDate, numberOfGuests, totalCost, bookingStatus, guestUser, hostUser} = req.body
+        
         const currentDate = new Date()
-        if (beginDate > endDate) {
+        if (beginningDate > endingDate) {
             throw{ status: 400, message:"La fecha de inicio es psoterior a la de termino" }
         }
-        if(beginDate < currentDate){
+        if(beginningDate < currentDate){
             throw{ status: 400, message:"La fecha de inicio es previa a la fecha actual" }
         }
-       
-        result = await BookingService.saveBooking(accommodationId, beginningDate, endingDate, numberOfGuests, totalCost, BookingStatus.CURRENT, guestUserId, guestName, hostName)
-        const documentBookingJson = result.toJSON()
-        res.status(200).send({
-            message: "Reservacion creada exitosamente",
+
+        const newBooking = {
+            accommodationId,
+            beginningDate,
+            endingDate,
+            numberOfGuests,
+            totalCost,
+            bookingStatus,
+            guestUser: req.body.guestUser,
+            hostUser: req.body.hostUser
+        }
+        
+        result = await BookingService.saveBooking(newBooking)
+
+        res.status(201).send({
+            message: "Reservacion creada con éxito",
             booking: result
         })
     } catch (error) {

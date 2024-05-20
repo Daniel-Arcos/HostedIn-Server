@@ -1,28 +1,18 @@
 const Booking = require('../models/Booking')
 const User = require('../models/User')
-const ID_MONGO_DB_SIZE = 24;
 
-const saveBooking = async(accommodationId, beginningDate, endingDate, numberOfGuests, totalCost, bookingStatus, guestUserId) => {
+const saveBooking = async(booking) => {
     try {        
-        const bookingFound = await Booking.findOne({accommodationId: accommodationId, guestUserId: guestUserId})
-        if(bookingFound){
-            throw{ status: 400, message:"Y existe una reservacion de este usuario para este alojamiento" }
-        }        
-        //TO-DO : VERIFICAR QUE ESA FEHCAS NO ESTEN RESERVADAS               
-        const usersNames = await getHostAndGuestNames(accommodationId, guestUserId)
-        const newBooking = new Booking({
-            accommodationId, 
-            beginningDate, 
-            endingDate,
-            numberOfGuests,
-            totalCost, 
-            bookingStatus,
-            guestUserId,
-            guestName: usersNames.guestUserName.fullName,
-            hostName: "usersNames"
-        })
 
-        const savedBooking = await newBooking.save()
+        const bookingFound = await Booking.findOne({accommodationId: booking.accommodationId, guestUser: booking.guestUser._id})
+
+        if(bookingFound){
+            throw{ status: 400, message:"Ya tienes una reservación para este alojamiento" }
+        }        
+        //TO-DO : VERIFICAR QUE ESA FECHAS NO ESTEN RESERVADAS               
+        const newBooking = new Booking(booking)
+        const savedBooking = await newBooking.save();
+
         return savedBooking
         
     } catch (error) {

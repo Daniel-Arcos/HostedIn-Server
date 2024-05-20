@@ -3,7 +3,8 @@ const model = mongoose.model
 
 bookingShcema = new mongoose.Schema({
     accommodationId:{
-        type: String, 
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'accomodations', 
         required: true
     },
     beginningDate: {
@@ -26,18 +27,15 @@ bookingShcema = new mongoose.Schema({
         type: String, 
         required: true
     },
-    guestUserId:{
-        type: String, 
-        unique: true,
+    guestUser: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'users', 
         required: true
     },
-    guestName: {
-        type: String,
-        required : true
-    },
-    hostName: {
-        type: String,
-        required : true
+    hostUser: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'users', 
+        required: true
     }
 },
 {
