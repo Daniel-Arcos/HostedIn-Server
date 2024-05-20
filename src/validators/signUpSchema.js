@@ -58,6 +58,17 @@ const signUpSchema = {
             errorMessage: 'Password must be greater than 8 and contain at least one upper...'
         },
 
+    },
+    role: {
+        exists: {
+            errorMessage: 'Role cannot be null'
+        }, 
+        isString: {
+            errorMessage: 'Role must be a string'
+        },
+        notEmpty: {
+            errorMessage: 'Role cannot be empty'
+        },
     }
 }
 

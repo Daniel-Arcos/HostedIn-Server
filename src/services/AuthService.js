@@ -1,9 +1,18 @@
 const { token } = require('morgan')
 const User = require('../models/User')
 const Jwt = require('../Security/Jwt')
+const Role = require('../models/Role')
 
-const createAccount = async (email, fullName, birthDate, phoneNumber, password) => {
+const createAccount = async (email, fullName, birthDate, phoneNumber, password, roleName) => {
     try {
+
+        const role = Role.findOne({name: roleName})
+        if (!role) {
+            throw {
+                status: 400,
+                message: "El rol especificado no existe"
+            }
+        }
 
         const userWithEmailFound = await User.findOne({email: email})
         const userWithPhoneNumberFound = await User.findOne({phoneNumber: phoneNumber})
@@ -13,14 +22,13 @@ const createAccount = async (email, fullName, birthDate, phoneNumber, password) 
                 message: "El correo electrónico o número de telefono ya se encuentra registrado."
             }
         } else {            
-           // const partesFecha = birth.split('/');
-            //const birthDate = new Date(partesFecha[2], partesFecha[1] - 1, partesFecha[0]);
             const newUser = new User({
                 email,
                 fullName,
                 birthDate,
                 phoneNumber,
-                password: await User.encryptPassword(password)
+                password: await User.encryptPassword(password),
+                role: role._id
             })
     
             const savedUser = await newUser.save();

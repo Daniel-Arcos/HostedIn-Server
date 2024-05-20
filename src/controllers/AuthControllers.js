@@ -11,8 +11,8 @@ const signUp = async (req, res) => {
                 message: "Uno de los siguientes campos falta o esta vacio en la peticion: 'email', 'fullName', 'birthDate', 'phoneNumber', 'password'"
             }); 
         }
-        const {email, fullName, birthDate, phoneNumber, password} = req.body
-        result = await UserService.createAccount(email, fullName, birthDate, phoneNumber, password);
+        const {email, fullName, birthDate, phoneNumber, password, role} = req.body
+        result = await UserService.createAccount(email, fullName, birthDate, phoneNumber, password, role);
         const documentoUserJson = result[0].toJSON()
         res.header('Authorization', `Bearer ${result[1]}`);
         return res.status(200).send({

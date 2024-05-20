@@ -38,7 +38,12 @@ userSchema = new mongoose.Schema({
             "type": "Buffer",
             data: []
         }
-    }
+    },
+    role: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'roles', 
+        required: true
+    }   
 },
 {
     timestamps: true,
