@@ -30,7 +30,6 @@ const createAccommodation = async (req, res) => {
 
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            console.log(errors)
             return res.status(400).json({
                 errors: errors.array(),
                 message: "Uno de los siguientes campos falta o esta vacio en la peticion: 'title', 'description', 'accommodationType', 'nightPrice', 'guestsNumber', 'roomsNumber', 'bedsNumber', 'bathroomsNumber', 'location'"
@@ -52,7 +51,8 @@ const createAccommodation = async (req, res) => {
             accommodationServices: req.body.accommodationServices || [],
             location: {
                 type: 'Point',
-                coordinates: [location.longitude, location.latitude]
+                coordinates: [location.longitude, location.latitude],
+                address: location.address
             },
             user: req.body.user._id
         };
