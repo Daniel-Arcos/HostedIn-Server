@@ -15,7 +15,7 @@ const getAccommodationsByLocationAndId = async (lat, long, id) => {
                 }
             },
             user: { $ne: id }
-        }).populate('userId')
+        }).populate('user')
         return filteredAccomodations
     } catch (error) {
         throw {
