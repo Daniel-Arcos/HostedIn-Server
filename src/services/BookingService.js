@@ -11,9 +11,16 @@ const saveBooking = async(booking) => {
         }        
         //TO-DO : VERIFICAR QUE ESA FECHAS NO ESTEN RESERVADAS               
         const newBooking = new Booking(booking)
-        const savedBooking = await newBooking.save();
+        const savedBooking = await newBooking.save()
 
-        return savedBooking
+        foundBooking = await Booking.findById(savedBooking._id).populate({
+            path: 'hostUser',
+            select: '-password'
+        }).populate({
+            path: 'guestUser',
+            select: '-password'
+        })
+        return foundBooking
         
     } catch (error) {
         throw {
@@ -66,7 +73,13 @@ async function getHostAndGuestNames(accommodationId, guestUserId){
 
 const getBooking = async(bookingId) => {
     try {
-        foundBooking = await Booking.findById(bookingId)
+        foundBooking = await Booking.findById(bookingId).populate({
+            path: 'hostUser',
+            select: '-password'
+        }).populate({
+            path: 'guestUser',
+            select: '-password'
+        })
         if(!foundBooking) {
             throw{ status: 404, message:"la reservacion no existe " }
         }
@@ -81,11 +94,17 @@ const getBooking = async(bookingId) => {
 
 const getAllBookingsByAccommodation = async (accommodationId)=> {
     try {
-        foundBookings = await Booking.find({accommodationId : accommodationId})
+        foundBookings = await Booking.find({accommodationId : accommodationId}).populate({
+            path: 'hostUser',
+            select: '-password'
+        }).populate({
+            path: 'guestUser',
+            select: '-password'
+        })
         if(!foundBookings) {
             throw{ status: 404, message:"No hay reservaciones para este alojamiento" }
         }
-        return {bookings: foundBookings}
+        return foundBookings
     } catch (error) {
         throw {
             status: error?.status || 500,
