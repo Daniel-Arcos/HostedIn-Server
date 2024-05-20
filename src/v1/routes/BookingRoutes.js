@@ -2,7 +2,7 @@ const express = require('express')
 const bookingController = require('../../controllers/BookingsController.js')
 const router = express.Router()
 const { checkSchema } = require('express-validator')
-const { saveBookingSchema } = require('../../validators/saveBookingShcema')
+const { saveBookingSchema } = require('../../validators/saveBookingSchema')
 const { updateBookingSchema } = require('../../validators/updateBookingSchema')
 
 

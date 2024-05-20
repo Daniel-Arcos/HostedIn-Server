@@ -79,13 +79,7 @@ const saveBookingSchema = {
         exists: {
             errorMessage: 'User cannot be null'
         }
-        // ,           
-        // custom: {
-        //     options: (value) => value.length === ID_MONGO_DB_SIZE,
-        //     errorMessage: 'hosttUserId is not valid'
-        // }
     }
-
 }
 
 module.exports = {
