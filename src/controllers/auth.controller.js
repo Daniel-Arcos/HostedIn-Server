@@ -1,6 +1,7 @@
 const { token } = require('morgan')
-const UserService = require('../services/AuthService')
-const { validationResult } = require('express-validator')
+const UserService = require('../services/auth.service')
+const { validationResult } = require('express-validator');
+const { leftTime } = require('../security/Jwt');
 
 const signUp = async (req, res) => {
     try {
@@ -8,20 +9,22 @@ const signUp = async (req, res) => {
         if (!errors.isEmpty()) {
             return res.status(400).json({
                 errors: errors.array(),
-                message: "Uno de los siguientes campos falta o esta vacio en la peticion: 'email', 'fullName', 'birthDate', 'phoneNumber', 'password'"
+                message: "Hay un error en la petición."
             }); 
         }
-        const {email, fullName, birthDate, phoneNumber, password, role} = req.body
-        result = await UserService.createAccount(email, fullName, birthDate, phoneNumber, password, role);
-        const documentoUserJson = result[0].toJSON()
+        const {email, fullName, birthDate, phoneNumber, password, roles} = req.body
+        
+        result = await UserService.createAccount(email, fullName, birthDate, phoneNumber, password, roles);
+        const documentoUserJson = result[0]
         res.header('Authorization', `Bearer ${result[1]}`);
+        console.log(documentoUserJson)
         return res.status(200).send({
             message: "Cuenta creada exitosamente",
             user: {
+                _id: documentoUserJson._id,
                 email: documentoUserJson.email,
                 fullName: documentoUserJson.fullName,
-                phoneNumber: documentoUserJson.phoneNumber,
-                _id: documentoUserJson._id
+                roles: documentoUserJson.roles.map(role => role.name)
             }
         })
     } catch (error) {
@@ -34,13 +37,14 @@ const signUp = async (req, res) => {
 }
 const signIn = async (req, res) => {
     try {
-        const {email, password} = req.body;
-        if (email == null ||
-            password == null
-        ) {
-            res.status(400).send({ 
-                error: "Uno de los siguientes campos falta o esta vacio en la peticion: 'email', 'password'"})
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({
+                errors: errors.array(),
+                message: "Hay un error en la petición."
+            }); 
         }
+        const {email, password} = req.body;
 
         result = await UserService.signIn(email, password);
         const documentoUserJson = result[0].toJSON()
@@ -48,10 +52,10 @@ const signIn = async (req, res) => {
         return res.status(200).send({
             message: "Inicio de sesion exitoso",
             user: {
+                _id: documentoUserJson._id,
                 email: documentoUserJson.email,
                 fullName: documentoUserJson.fullName,
-                phoneNumber: documentoUserJson.phoneNumber,
-                _id: documentoUserJson._id
+                roles: documentoUserJson.roles.map(role => role.name)
             }
         })
     } catch (error) {
@@ -61,7 +65,15 @@ const signIn = async (req, res) => {
     }
 }
 
+const time = async (req, res) => {
+    const time = leftTime(req)
+    if (time == null)
+        return res.status(404).send()
+    return res.status(200).send(time)
+}
+
 module.exports = {
     signUp,
-    signIn
+    signIn,
+    time
 }

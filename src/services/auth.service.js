@@ -1,16 +1,15 @@
 const { token } = require('morgan')
 const User = require('../models/User')
-const Jwt = require('../Security/Jwt')
+const Jwt = require('../security/Jwt')
 const Role = require('../models/Role')
 
-const createAccount = async (email, fullName, birthDate, phoneNumber, password, roleName) => {
+const createAccount = async (email, fullName, birthDate, phoneNumber, password, roleNames) => {
     try {
-
-        const role = Role.findOne({name: roleName})
-        if (!role) {
+        const roles = await Role.find({name: { $in: roleNames}})
+        if (roles.length !== roleNames.length) {
             throw {
                 status: 400,
-                message: "El rol especificado no existe"
+                message: "Uno de los roles no existe"
             }
         }
 
@@ -28,12 +27,13 @@ const createAccount = async (email, fullName, birthDate, phoneNumber, password, 
                 birthDate,
                 phoneNumber,
                 password: await User.encryptPassword(password),
-                role: role._id
+                roles: roles.map((role) => role._id)
             })
     
-            const savedUser = await newUser.save();
-            const token = Jwt.sign(savedUser._id)
-            return [savedUser, token]
+            const savedUser = await newUser.save()
+            const user = await User.findById(savedUser._id).populate('roles')
+            const token = Jwt.sign(user.email, user.fullName, roleNames)
+            return [user, token]
         }
     } catch (error) {
         throw {
@@ -45,10 +45,10 @@ const createAccount = async (email, fullName, birthDate, phoneNumber, password, 
 
 const signIn = async (email, password) => {
     try {
-        const userFound = await User.findOne({email: email})
+        const userFound = await User.findOne({email: email}).populate('roles')
         if (!userFound) {
             throw {
-                status: 400,
+                status: 401,
                 message: "Usuario no encontrado."
             }
         }
@@ -65,7 +65,7 @@ const signIn = async (email, password) => {
             }
         }
 
-        const token = Jwt.sign(userFound._id)
+        const token = Jwt.sign(userFound.email, userFound.fullName)
         return [userFound, token]
     } catch (error) {
         throw {

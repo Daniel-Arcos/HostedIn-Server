@@ -1,0 +1,22 @@
+POST http://localhost:3000/api/v1/auth/signup
+Content-Type: application/json
+
+{
+  "email": "daniarcos319@gmail.com",
+  "fullName": "Daniel Garcia Arcos",
+  "birthDate": "2003-12-28",
+  "phoneNumber": "1323020010",
+  "password": "Asfixiars3#",
+  "roles": ["Guest", "Host"]
+}
+
+###
+
+GET http://localhost:3000/api/v1/users/664ba69d4f68b514b1778093
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOlsiR3Vlc3QiLCJIb3N0Il0sImlzcyI6IkpXVEhvc3RlZEluU2VydmVyIiwiYXVkIjoiSldUSG9zdGVkSW5DbGllbnRzIiwiaWF0IjoxNzE2MjM0MTkyLCJleHAiOjE3MTYyMzUzOTJ9.g46nD98nedS5_gH8-It3pTGJCWgHL_n1tnAsMlXSfmc
+
+
+###
+
+GET http://localhost:3000/api/v1/accommodations
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOlsiR3Vlc3QiLCJIb3N0Il0sImlzcyI6IkpXVEhvc3RlZEluU2VydmVyIiwiYXVkIjoiSldUSG9zdGVkSW5DbGllbnRzIiwiaWF0IjoxNzE2MjM0MTkyLCJleHAiOjE3MTYyMzUzOTJ9.g46nD98nedS5_gH8-It3pTGJCWgHL_n1tnAsMlXSfmc

@@ -1,5 +1,5 @@
 const { token } = require('morgan')
-const AccommodationService = require('../services/AccommodationService')
+const AccommodationService = require('../services/accommodation.service')
 const { validationResult } = require('express-validator')
 
 const getAccommodations = async (req, res) => {

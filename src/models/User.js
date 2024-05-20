@@ -39,11 +39,13 @@ userSchema = new mongoose.Schema({
             data: []
         }
     },
-    role: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'roles', 
-        required: true
-    }   
+    roles: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'roles', 
+            required: true
+        },
+    ]   
 },
 {
     timestamps: true,

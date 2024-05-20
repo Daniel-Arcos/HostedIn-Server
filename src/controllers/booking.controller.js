@@ -1,6 +1,6 @@
-const BookingService = require('../services/BookingService')
+const BookingService = require('../services/booking.service')
 const BookingStatus = require('../models/BookingStatus')
-const Jwt = require('../Security/Jwt')
+const Jwt = require('../security/Jwt')
 const { validationResult } = require('express-validator')
 const ConsultorTypes = {
     HOST : "Host",

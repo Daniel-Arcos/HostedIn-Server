@@ -1,6 +1,6 @@
 const { token } = require('morgan')
 const User = require('../models/User')
-const Jwt = require('../Security/Jwt')
+const Jwt = require('../security/Jwt')
 const PasswordCodes = require('../models/PasswordCode')
 const RecoverPassUtils = require('../utils/RecoverPasswordUtils')
 
@@ -16,7 +16,7 @@ const getUser = async (userId) => {
             };
         }
 
-        const userFound = await User.findById(userId);
+        const userFound = await User.findById(userId).populate('roles');
 
         if (!userFound) {
             throw {

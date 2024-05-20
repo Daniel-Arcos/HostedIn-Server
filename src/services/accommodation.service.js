@@ -1,6 +1,6 @@
 const { token } = require('morgan')
 const Accommodation = require('../models/Accommodation')
-const Jwt = require('../Security/Jwt')
+const Jwt = require('../security/Jwt')
 
 const getAccommodationsByLocationAndId = async (lat, long, id) => {
     try {

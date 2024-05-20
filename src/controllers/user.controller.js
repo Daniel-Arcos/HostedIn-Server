@@ -1,6 +1,5 @@
-const UserService = require('../services/UserService')
+const UserService = require('../services/user.service')
 const User = require('../models/User')
-const Jwt = require('../Security/Jwt')
 const { validationResult } = require('express-validator')
 
 const getUserById = async (req, res) => {
