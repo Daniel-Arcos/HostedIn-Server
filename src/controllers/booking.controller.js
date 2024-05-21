@@ -1,6 +1,6 @@
-const BookingService = require('../services/BookingService')
+const BookingService = require('../services/booking.service')
 const BookingStatus = require('../models/BookingStatus')
-const Jwt = require('../Security/Jwt')
+const Jwt = require('../security/Jwt')
 const { validationResult } = require('express-validator')
 const ConsultorTypes = {
     HOST : "Host",
@@ -48,7 +48,7 @@ const createBooking = async(req, res) =>{
             booking: result
         })
     } catch (error) {
-        res
+        return res
             .status(error?.status || 500)
             .send({message: error?.message || error});
     }
@@ -79,7 +79,7 @@ const editBooking = async(req, res) => {
             message: "Reservacion actualizada exitosamente"
         })
     } catch (error) {
-        res
+        return res
             .status(error?.status || 500)
             .send({message: error?.message || error});
     }
@@ -97,7 +97,7 @@ const getBookingById = async(req, res) => {
             booking: result
         })
     } catch (error) {
-        res
+        return res
             .status(error?.status || 500)
             .send({message: error?.message || error});
     }
@@ -124,7 +124,7 @@ const getBookingByAccommodationId = async(req, res) => {
             bookings: result          
         })
     } catch (error) {
-        res
+        return res
             .status(error?.status || 500)
             .send({message: error?.message || error});
     }
@@ -142,12 +142,6 @@ function filterBookingsByStatus(status, bookings){
 
 const deleteBookingById = async(req, res) => {
     try {        
-        // const authorization = req.headers.authorization;  
-        // if (!authorization) {
-        //     throw { status: 401, message: 'Authorization header is missing' };
-        // }      
-        // Jwt.verifyToken(authorization) 
-
         const bookingId = req.params.bookingId
         if (bookingId === null) {
             return res.status(400).send({error: "El viene nulo"})
@@ -157,7 +151,7 @@ const deleteBookingById = async(req, res) => {
             message: "Reservacion eliminada exitosamente",         
         })
     } catch (error) {
-        res
+        return res
             .status(error?.status || 500)
             .send({message: error?.message || error});
     }

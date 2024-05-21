@@ -1,5 +1,4 @@
-const { token } = require('morgan')
-const AccommodationService = require('../services/AccommodationService')
+const AccommodationService = require('../services/accommodation.service')
 const { validationResult } = require('express-validator')
 
 const getAccommodations = async (req, res) => {
@@ -57,16 +56,13 @@ const createAccommodation = async (req, res) => {
             user: req.body.user._id
         };
 
-        result = await AccommodationService.createAccommodation(newAccommodation);
+        result = await AccommodationService.createAccommodation(newAccommodation)
 
-        //TODO: Token
-        //res.header('Authorization', `Bearer ${result[1]}`);
         res.status(201).send({
             message: "Alojamiento creado con éxito",
-            user: result[0]
+            accommodation: result
         })
     } catch (error) {
-        console.log(error)
         return res
             .status(error?.status || 500)
             .send({message: error?.message || error});

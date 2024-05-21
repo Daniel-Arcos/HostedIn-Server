@@ -1,6 +1,6 @@
-const UserService = require('../services/UserService')
+const UserService = require('../services/user.service')
 const User = require('../models/User')
-const Jwt = require('../Security/Jwt')
+const jwt = require('../security/Jwt')
 const { validationResult } = require('express-validator')
 
 const getUserById = async (req, res) => {
@@ -11,14 +11,23 @@ const getUserById = async (req, res) => {
         }
 
         const result = await UserService.getUser(userId);
-
-        res.header('Authorization', `Bearer ${result[1]}`);
-        res.status(200).send({
+        return res.status(200).send({
             message: "Cuenta recuperada con éxito",
-            user: result[0]
+            user: {
+                _id: result._id,
+                email: result.email,
+                fullName: result.fullName,
+                birthDate: result.birthDate,
+                phoneNumber: result.phoneNumber,
+                password: result.password,
+                occupation: result.occupation,
+                residence: result.residence,
+                profilePhoto: result.profilePhoto,
+                roles: result.roles.map(role => role.name),
+            }
         })
     } catch (error) {
-        res.status(error?.status || 500)
+        return res.status(error?.status || 500)
             .send({
                 message: error?.message || error
             })
@@ -58,14 +67,23 @@ const updateUserById = async (req, res) => {
         
         const result = await UserService.editAccount(userId, userToEdit);
 
-        res.header('Authorization', `Bearer ${result[1]}`);
-        res.status(200).send({
+        return res.status(200).send({
             message: "Cuenta actualizada con exito",
-            user: result[0]
+            user: {
+                _id: result._id,
+                email: result.email,
+                fullName: result.fullName,
+                birthDate: result.birthDate,
+                phoneNumber: result.phoneNumber,
+                password: result.password,
+                occupation: result.occupation,
+                residence: result.residence,
+                profilePhoto: result.profilePhoto,
+                roles: result.roles.map(role => role.name),
+            }
         })
     } catch (error) {
-        console.error("Error al actualizar la cuenta:", error);
-        res.status(error?.status || 500)
+        return res.status(error?.status || 500)
             .send({
                 message: error?.message || error
             })
@@ -82,15 +100,13 @@ const deleteUserById = async (req, res) => {
         
         const result = await UserService.deleteAccount(userId);
 
-        res.header('Authorization', `Bearer ${result[1]}`);
-        res.status(200).send({
+        return res.status(200).send({
             userId: userId,
             message: "Cuenta eliminada con exito"
         })
 
     } catch (error) {
-        console.error("Error al eliminar la cuenta:", error);
-        res.status(error?.status || 500)
+        return res.status(error?.status || 500)
             .send({
                 message: error?.message || error
             })
@@ -109,12 +125,11 @@ const sendUserEmail = async(req, res) => {
         }
         const email = content
         result = await UserService.sendUserCode(email)               
-        res.header('Authorization')
-        res.status(200).send({
+        return res.status(200).send({
             message:"Codigo enviado exitosamente"
         })
     } catch (error) {
-        res
+        return res
             .status(error?.status || 500)
             .send({message: error?.message || error});
     }
@@ -132,12 +147,12 @@ const userCodeVerification = async(req, res) => {
         const code = content
         result = await UserService.verifyUserCode(code)
         res.header('Authorization', `Bearer ${result}`)    
-        res.status(200).send({
+        return res.status(200).send({
             message:"Codigo correcto"
         })      
     }
     catch (error) {
-        res
+        return res
             .status(error?.status || 500)
             .send({message: error?.message || error});
     }
@@ -150,7 +165,7 @@ const updateUserPassword = async(req, res) => {
         if (!authorization) {
             throw { status: 401, message: 'Authorization header is missing' };
         }      
-        Jwt.verifyToken(authorization)  
+        jwt.verifyToken(authorization)  
         
         
         const errors = validationResult(req)
@@ -166,11 +181,11 @@ const updateUserPassword = async(req, res) => {
         const {newPassword, email} = req.body 
         
         await UserService.updateUserPassword(newPassword, email)
-        res.status(200).send({
+        return res.status(200).send({
             message:"Contaseña actualizada correctamente"
         })        
     } catch (error) {
-        res
+        return res
             .status(error?.status || 500)
             .send({message: error?.message || error});
     }
