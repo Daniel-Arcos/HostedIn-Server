@@ -17,14 +17,14 @@ const sign = (email, name, roles) => {
 }
 
 const confirmEmailCode = (code) => {
-    return jwt.sign({code :code}, config.SECRET, {
+    return jwt.sign({code :code}, jwtSecret, {
         expiresIn: 86400
     })
 }
 
 const verifyToken = (token) => {
     try {
-        const decoded = jwt.verify(token, config.SECRET);
+        const decoded = jwt.verify(token, jwtSecret);
         return decoded;
     } catch (error) {
         throw {
