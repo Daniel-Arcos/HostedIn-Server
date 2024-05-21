@@ -2,7 +2,7 @@ const { token } = require('morgan')
 const mongoose = require('mongoose');
 const Accommodation = require('../models/Accommodation')
 const Booking = require('../models/Booking')
-const Jwt = require('../Security/Jwt')
+const Jwt = require('../security/Jwt')
 
 const getAccommodationsByLocationAndId = async (lat, long, id) => {
     try {
@@ -129,7 +129,12 @@ const createAccommodation = async (accommodation) => {
         const newAccommodation = new Accommodation(accommodation);
         const savedAccommodation = await newAccommodation.save();
 
-        return [savedAccommodation]
+        foundAccommodation = await Accommodation.findById(savedAccommodation._id).populate({
+            path: 'user',
+            select: '-password'
+        })
+
+        return foundAccommodation
 
     } catch (error) {
         throw {

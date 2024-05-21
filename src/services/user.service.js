@@ -1,6 +1,6 @@
 const { token } = require('morgan')
 const User = require('../models/User')
-const Jwt = require('../Security/Jwt')
+const Jwt = require('../security/Jwt')
 const PasswordCodes = require('../models/PasswordCode')
 const RecoverPassUtils = require('../utils/RecoverPasswordUtils')
 
@@ -16,7 +16,7 @@ const getUser = async (userId) => {
             };
         }
 
-        const userFound = await User.findById(userId);
+        const userFound = await User.findById(userId).populate('roles');
 
         if (!userFound) {
             throw {
@@ -24,10 +24,7 @@ const getUser = async (userId) => {
                 message: "Usuario no encontrado"
             }
         }
-
-        const token = Jwt.sign(userFound._id);
-
-        return [userFound, token];
+        return userFound
 
     } catch (error) {
         throw {
@@ -51,7 +48,7 @@ const editAccount = async (userId, userToEdit) => {
         }
         const userFound = await User.findByIdAndUpdate(userId, userToEdit, {
             new: true,
-        });
+        }).populate('roles');
 
         if (!userFound) {
             throw {
@@ -59,10 +56,7 @@ const editAccount = async (userId, userToEdit) => {
                 message: "Usuario no encontrado"
             }
         }
-
-        const token = Jwt.sign(userFound._id);
-
-        return [userFound, token]
+        return userFound
     } catch (error) {
         throw {
             status: error?.status || 500,
@@ -99,9 +93,7 @@ const deleteAccount = async (userId) => {
             };
         }
 
-        const token = Jwt.sign(userFound._id);
-
-        return [deletedUser, token]
+        return deletedUser;
     } catch (error) {
         throw {
             status: error?.status || 500,
