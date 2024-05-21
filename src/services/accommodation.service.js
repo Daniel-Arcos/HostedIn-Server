@@ -68,7 +68,12 @@ const createAccommodation = async (accommodation) => {
         const newAccommodation = new Accommodation(accommodation);
         const savedAccommodation = await newAccommodation.save();
 
-        return savedAccommodation
+        foundAccommodation = await Accommodation.findById(savedAccommodation._id).populate({
+            path: 'user',
+            select: '-password'
+        })
+
+        return foundAccommodation
 
     } catch (error) {
         throw {
