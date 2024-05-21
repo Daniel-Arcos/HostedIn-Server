@@ -8,7 +8,7 @@ const Authorize = require('../../middlewares/auth.middleware.js')
 
 router.post('/', Authorize('Host'),  checkSchema(accommodationSchema), accommodationsController.createAccommodation)
 router.get('/:accommodationId/bookings', Authorize('Host'), bookingController.getBookingByAccommodationId)
-router.get('/', Authorize('Host'), accommodationsController.getAccommodations)
+router.get('/', Authorize('Host,Guest'), accommodationsController.getAccommodations)
 
 
 module.exports = router
