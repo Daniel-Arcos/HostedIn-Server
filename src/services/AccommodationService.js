@@ -83,8 +83,7 @@ const getOwnedAccommodations = async (id) => {
             {
                 $replaceRoot:{newRoot: "$accommodationsDetails"}
             }
-        ])   
-        console.log(id+"\n"+accommodationsFound.accommodationDetails)   
+        ])    
         return accommodationsFound
     } catch (error) {
         console.log(error)
@@ -94,6 +93,26 @@ const getOwnedAccommodations = async (id) => {
         }
     }
 }
+
+const getBookedAccommodations = async (id, status) => {
+    try {
+        let accommodationsFound
+        accommodationsFound = await Booking.find({guestUser:id, bookingStatus:status}).populate({
+            path: 'accommodationId',
+            populate:{
+                path: 'user',
+                select: '-password'
+            }
+        })  
+        return accommodationsFound
+    } catch (error) {
+        throw {
+            status: error?.status || 500,
+            message: error.message
+        }
+    }
+}
+
 
 const createAccommodation = async (accommodation) => {
     try {
@@ -124,5 +143,6 @@ module.exports = {
     createAccommodation,
     getAllAccommodations,
     getAccommodationsByLocationAndId,
-    getOwnedAccommodations
+    getOwnedAccommodations, 
+    getBookedAccommodations
 }

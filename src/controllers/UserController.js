@@ -4,6 +4,7 @@ const Jwt = require('../Security/Jwt')
 const { validationResult } = require('express-validator')
 const Accommodation = require('../models/Accommodation')
 const AccommodationService = require('../services/AccommodationService')
+const { crossOriginResourcePolicy } = require('helmet')
 
 const getUserById = async (req, res) => {
     try {
@@ -181,14 +182,19 @@ const updateUserPassword = async(req, res) => {
 const getAccommodationsByUserId = async (req, res) => {
     try {
         const userId= req.params.userId
-        const {atLeastOneBooking} = req.query
-        let result
+        const {atLeastOneBooking, status} = req.query
+        let accommodations
         if(atLeastOneBooking){
-            result = await AccommodationService.getOwnedAccommodations(userId)
+            accommodations = await AccommodationService.getOwnedAccommodations(userId)
+        }
+        else if(status){
+            accommodations = await AccommodationService.getBookedAccommodations(userId,status)
+        }else{
+
         }
         res.status(200).send({
-            message:"Alojamientos con al menos una reservacion, recuperados exitosamente",
-            accommodations: result})
+            message:"Alojamientos reservados, recuperados exitosamente",
+            accommodations})
     } catch (error) {
         res
             .status(error?.status || 500)
