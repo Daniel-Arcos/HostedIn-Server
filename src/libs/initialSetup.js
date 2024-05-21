@@ -3,10 +3,6 @@ dotenv.config()
 
 const Role = require('../models/Role')
 const User = require('../models/User')
-MODERATOR_EMAIL=process.env.MODERATOR_EMAIL
-MODERATOR_FULL_NAME=process.env.MODERATOR_FULL_NAME
-MODERATOR_PHONE=process.env.MODERATOR_PHONE
-MODERATOR_PASSWORD=process.env.MODERATOR_PASSWORD
 
 const createRoles = async () => {
     try {
