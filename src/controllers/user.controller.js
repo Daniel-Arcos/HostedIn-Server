@@ -3,7 +3,7 @@ const User = require('../models/User')
 const jwt = require('../security/Jwt')
 const { validationResult } = require('express-validator')
 const Accommodation = require('../models/Accommodation')
-const AccommodationService = require('../services/AccommodationService')
+const AccommodationService = require('../services/accommodation.service')
 const { crossOriginResourcePolicy } = require('helmet')
 
 const getUserById = async (req, res) => {
