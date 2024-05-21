@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --testTimeout 60000"
   },
   "keywords": [],
   "author": "",
@@ -28,7 +28,9 @@
     "swagger-ui-express": "^5.0.0"
   },
   "devDependencies": {
+    "jest": "^29.7.0",
     "nodemon": "^3.1.0",
+    "supertest": "^7.0.0",
     "swagger-autogen": "^2.23.7"
   }
 }

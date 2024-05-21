@@ -32,7 +32,7 @@ const createAccount = async (email, fullName, birthDate, phoneNumber, password, 
     
             const savedUser = await newUser.save()
             const user = await User.findById(savedUser._id).populate('roles')
-            const token = Jwt.sign(user.email, user.fullName, roleNames)
+            const token = Jwt.sign(user.email, user.fullName, user.roles.map(role => role.name))
             return [user, token]
         }
     } catch (error) {
@@ -65,7 +65,7 @@ const signIn = async (email, password) => {
             }
         }
 
-        const token = Jwt.sign(userFound.email, userFound.fullName)
+        const token = Jwt.sign(userFound.email, userFound.fullName, userFound.roles.map(role => role.name))
         return [userFound, token]
     } catch (error) {
         throw {

@@ -17,8 +17,7 @@ const signUp = async (req, res) => {
         result = await UserService.createAccount(email, fullName, birthDate, phoneNumber, password, roles);
         const documentoUserJson = result[0]
         res.header('Authorization', `Bearer ${result[1]}`);
-        console.log(documentoUserJson)
-        return res.status(200).send({
+        return res.status(201).send({
             message: "Cuenta creada exitosamente",
             user: {
                 _id: documentoUserJson._id,
@@ -28,6 +27,7 @@ const signUp = async (req, res) => {
             }
         })
     } catch (error) {
+        console.log(error)
         return res
             .status(error?.status || 500)
             .send({message: error?.message || error});

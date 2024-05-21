@@ -18,6 +18,8 @@ app.use(morgan('dev'))
 
 app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerFile))
 app.use("/api/v1", v1Router)
-app.listen(PORT, '0.0.0.0', () => { 
+server = app.listen(PORT, '0.0.0.0', () => { 
     console.log(`Server listening on port:${PORT}/api/v1`)
 })
+
+module.exports = server;

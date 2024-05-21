@@ -13,7 +13,6 @@ const Authorize = (requiredRoles) => {
 
             const token = authHeader.split(' ')[1];
             const decodedToken = jwt.verify(token, jwtSecret);
-
             const userRoles = decodedToken[ClaimTypes.Role];
             const requiredRolesArray = requiredRoles.split(',');
 

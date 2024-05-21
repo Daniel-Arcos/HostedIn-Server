@@ -24,10 +24,7 @@ const getUser = async (userId) => {
                 message: "Usuario no encontrado"
             }
         }
-
-        const token = Jwt.sign(userFound._id);
-
-        return [userFound, token];
+        return userFound
 
     } catch (error) {
         throw {
@@ -51,7 +48,7 @@ const editAccount = async (userId, userToEdit) => {
         }
         const userFound = await User.findByIdAndUpdate(userId, userToEdit, {
             new: true,
-        });
+        }).populate('roles');
 
         if (!userFound) {
             throw {
@@ -59,10 +56,7 @@ const editAccount = async (userId, userToEdit) => {
                 message: "Usuario no encontrado"
             }
         }
-
-        const token = Jwt.sign(userFound._id);
-
-        return [userFound, token]
+        return userFound
     } catch (error) {
         throw {
             status: error?.status || 500,
@@ -99,9 +93,7 @@ const deleteAccount = async (userId) => {
             };
         }
 
-        const token = Jwt.sign(userFound._id);
-
-        return [deletedUser, token]
+        return deletedUser;
     } catch (error) {
         throw {
             status: error?.status || 500,

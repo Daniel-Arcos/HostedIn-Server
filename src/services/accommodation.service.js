@@ -68,7 +68,7 @@ const createAccommodation = async (accommodation) => {
         const newAccommodation = new Accommodation(accommodation);
         const savedAccommodation = await newAccommodation.save();
 
-        return [savedAccommodation]
+        return savedAccommodation
 
     } catch (error) {
         throw {
