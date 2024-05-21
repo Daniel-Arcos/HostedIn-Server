@@ -1,5 +1,7 @@
 const { token } = require('morgan')
+const mongoose = require('mongoose');
 const Accommodation = require('../models/Accommodation')
+const Booking = require('../models/Booking')
 const Jwt = require('../Security/Jwt')
 
 const getAccommodationsByLocationAndId = async (lat, long, id) => {
@@ -52,6 +54,46 @@ const getAllAccommodations = async (id) => {
     }
 }
 
+const getOwnedAccommodations = async (id) => {
+    try {
+        let accommodationsFound
+        const objectId = new mongoose.Types.ObjectId(id);
+        accommodationsFound = await Booking.aggregate([
+            {
+                $match: {
+                    hostUser: objectId
+                }
+            },
+            {
+                $group: {
+                    _id : "$accommodationId"
+                }
+            },
+            {
+                $lookup:{
+                    from: "accomodations",
+                    localField: "_id",
+                    foreignField:"_id",
+                    as:"accommodationsDetails"
+                }
+            },
+            {
+                $unwind:"$accommodationsDetails"
+            },
+            {
+                $replaceRoot:{newRoot: "$accommodationsDetails"}
+            }
+        ])   
+        console.log(id+"\n"+accommodationsFound.accommodationDetails)   
+        return accommodationsFound
+    } catch (error) {
+        console.log(error)
+        throw {
+            status: error?.status || 500,
+            message: error.message
+        }
+    }
+}
 
 const createAccommodation = async (accommodation) => {
     try {
@@ -81,5 +123,6 @@ const createAccommodation = async (accommodation) => {
 module.exports = { 
     createAccommodation,
     getAllAccommodations,
-    getAccommodationsByLocationAndId
+    getAccommodationsByLocationAndId,
+    getOwnedAccommodations
 }
