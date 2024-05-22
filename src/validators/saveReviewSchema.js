@@ -24,7 +24,7 @@ const saveReviewSchema = {
         notEmpty: {
             errorMessage: 'ratiing cannot be empty'
         },
-        isNumber:{
+        isNumeric:{
             errorMessage: 'ratiing must be Number'
         }
     },
