@@ -11,13 +11,13 @@ const changePasswordSchema = {
         notEmpty: {
             errorMessage: 'Password cannot be empty'
         },
-        // isStrongPassword: {
-        //     minLength: 8,
-        //     minLowercase: 1,
-        //     minUppercase: 1,
-        //     minNumbers: 1,
-        //     errorMessage: 'Password must be greater than 8 and contain at least one upper...'
-        // }
+        isStrongPassword: {
+            minLength: 8,
+            minLowercase: 1,
+            minUppercase: 1,
+            minNumbers: 1,
+            errorMessage: 'Password must be greater than 8 and contain at least one upper...'
+        }
     },
     email: {
         exists: {

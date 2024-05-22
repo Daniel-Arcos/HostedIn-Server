@@ -3,6 +3,7 @@ const User = require('../models/User')
 const Jwt = require('../security/Jwt')
 const PasswordCodes = require('../models/PasswordCode')
 const RecoverPassUtils = require('../utils/RecoverPasswordUtils')
+const MailSender = require('../utils/MailSender')
 
 const ID_MONGO_DB_SIZE = 24;
 
@@ -115,7 +116,7 @@ const sendUserCode = async (email) => {
             const currentCode = await PasswordCodes.findOne({ email: email });
             if(currentCode){                
                 if (RecoverPassUtils.is10MinutesAgo(currentCode.inssuanceDate)) {  
-                    await RecoverPassUtils.sendEmail(email, currentCode)
+                    await sendEmail(email, currentCode)
                 }
                 else{
                     throw {
@@ -125,7 +126,7 @@ const sendUserCode = async (email) => {
                 }               
             }   
             else{                
-                await RecoverPassUtils.sendEmail(email)
+                await sendEmail(email)
             }                    
         }
     }catch(error){
@@ -134,6 +135,42 @@ const sendUserCode = async (email) => {
             message: error.message
         }
     }
+}
+
+async function sendEmail(email, codeRegistry){
+    const code = RecoverPassUtils.generateRandomCode()
+    try {
+        const emailWasSend = await MailSender.sendCodeVerificacion(email, code)
+        if(emailWasSend){   
+            let newPasswordCode                 
+            const inssuanceDate = new Date()  
+            if(codeRegistry == null){       
+                newPasswordCode = new PasswordCodes({
+                    email,
+                    code, 
+                    inssuanceDate
+                })              
+            }
+            else{
+                newPasswordCode = codeRegistry
+                newPasswordCode.code = code
+                newPasswordCode.inssuanceDate = inssuanceDate   
+            }       
+            await newPasswordCode.save();   
+        }
+    else{
+        throw {
+            status: 400,
+            message: "Email no enviado"
+        }
+    } 
+    } catch (error) {
+        throw {
+            status: error?.status || 500,
+            message: error.message
+        }
+    }
+    
 }
 
 const verifyUserCode = async (code) => {
