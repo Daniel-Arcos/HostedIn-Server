@@ -2,6 +2,7 @@ const app = require('./app')
 const bodyParser = require('body-parser')
 const expressValidator = require('express-validator')
 const dotenv = require('dotenv')
+const expressMongoSanitize = require('express-mongo-sanitize')
 require('./libs/initialSetup')
 require('./database')
 const v1Router = require("./v1/routes")
@@ -15,6 +16,7 @@ const PORT = process.env.SERVER_PORT || 3000
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(morgan('dev'))
+app.use(expressMongoSanitize())
 
 app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerFile))
 app.use("/api/v1", v1Router)
