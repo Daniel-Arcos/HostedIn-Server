@@ -60,7 +60,7 @@ const updateBooking = async(bookingId, accommodationId, beginningDate, endingDat
 
 async function getHostAndGuestNames(accommodationId, guestUserId){
     const guestUserName = await User.findById(guestUserId)
-    if(!guestUserName){ throw{ status: 400, message:"BNo existe el husped ne la BD" } }
+    if(!guestUserName){ throw{ status: 400, message:"BNo existe el huesped en la BD" } }
     
     // const accommodationFound = await User.findById(accommodationId)
     // if(!accommodationFound){ throw{ status: 400, message:"El alojamiento no existe" } }

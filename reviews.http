@@ -1,0 +1,9 @@
+POST http://localhost:3000/api/v1/reviews
+Content-Type: application/json
+
+{
+    "accommodation": "664d5e73cd6354b2f3197172",
+    "reviewDescription": "Excelente alojamiento y gran host",
+    "rating": "5",
+    "guestUser": "664d0f60ca4d1929552c77a6"
+}
