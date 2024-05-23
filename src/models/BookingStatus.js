@@ -1,6 +1,7 @@
 const BookingStatuses = {
     CURRENT : 'Current',
-    OVERDUE : 'Overdue'
+    OVERDUE : 'Overdue',
+    CANCELLED: 'Cancelled'
 }
 
 module.exports = BookingStatuses
