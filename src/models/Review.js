@@ -26,4 +26,4 @@ reviewShcema = new mongoose.Schema({
     versionKey: false
 })
 
-module.exports =   model("reviews",reviewShcema)
+module.exports = model("reviews",reviewShcema)

@@ -51,7 +51,11 @@ accommodationSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'users', 
         required: true
-    }
+    },
+    multimedias: [{
+        type: Buffer,
+        default: Buffer.alloc(0)
+    }]
 },
 {
     timestamps: true,

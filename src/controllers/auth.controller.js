@@ -9,7 +9,7 @@ const signUp = async (req, res) => {
         if (!errors.isEmpty()) {
             return res.status(400).json({
                 errors: errors.array(),
-                message: "Hay un error en la petición."
+                message: "Uno de los campos falta, esta vacio o es erroneo en la peticion"
             }); 
         }
         const {email, fullName, birthDate, phoneNumber, password, roles} = req.body
