@@ -16,10 +16,13 @@ const saveNewReview= async (review) => {
             reviewDescription: review.reviewDescription,
             rating: review.rating,
             guestUser: review.guestUser
-
         })
+
         const savedReview = await newReview.save()
-        return savedReview
+        return savedReview.populate({
+            path: 'guestUser',
+            select: '-password' 
+        });
     } catch (error) {
         throw {
             status: error?.status || 500,
