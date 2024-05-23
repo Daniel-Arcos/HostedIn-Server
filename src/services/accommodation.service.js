@@ -54,7 +54,28 @@ const getAllAccommodations = async (id) => {
     }
 }
 
-const getOwnedAccommodations = async (id) => {
+const getAllOwnedAccommodations = async (id) => {
+    try {
+
+        let allAccommodations
+        if (id) {
+            allAccommodations = await Accommodation.find({
+                user: id
+            }).populate({
+                path: 'user',
+                select: '-password' 
+            })
+        }
+        return allAccommodations
+    } catch (error) {
+        throw {
+            status: error?.status || 500,
+            message: error.message
+        }
+    }
+}
+
+const getOwnedBookedAccommodations = async (id) => {
     try {
         let accommodationsFound
         const objectId = new mongoose.Types.ObjectId(id);
@@ -94,7 +115,7 @@ const getOwnedAccommodations = async (id) => {
     }
 }
 
-const getBookedAccommodations = async (id, status) => {
+const getGuestBookedAccommodations = async (id, status) => {
     try {
         let accommodationsFound
         accommodationsFound = await Booking.find({guestUser:id, bookingStatus:status}).populate({
@@ -148,6 +169,7 @@ module.exports = {
     createAccommodation,
     getAllAccommodations,
     getAccommodationsByLocationAndId,
-    getOwnedAccommodations, 
-    getBookedAccommodations
+    getOwnedBookedAccommodations, 
+    getGuestBookedAccommodations,
+    getAllOwnedAccommodations
 }

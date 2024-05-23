@@ -200,15 +200,15 @@ const getAccommodationsByUserId = async (req, res) => {
         const {atLeastOneBooking, status} = req.query
         let accommodations
         if(atLeastOneBooking){
-            accommodations = await AccommodationService.getOwnedAccommodations(userId)
+            accommodations = await AccommodationService.getOwnedBookedAccommodations(userId)
         }
         else if(status){
-            accommodations = await AccommodationService.getBookedAccommodations(userId,status)
+            accommodations = await AccommodationService.getGuestBookedAccommodations(userId,status)
         }else{
-
+            accommodations = await AccommodationService.getAllOwnedAccommodations(userId)
         }
         res.status(200).send({
-            message:"Alojamientos reservados, recuperados exitosamente",
+            message:"Alojamientos recuperados exitosamente",
             accommodations})
     } catch (error) {
         res
