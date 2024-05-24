@@ -12,26 +12,24 @@ const createBooking = async(req, res) =>{
 
         const errors = validationResult(req)
         if (!errors.isEmpty()) {
-            console.log(errors)
             throw { status : 400,
                 errors: errors.array(),
-                message: "Uno de los siguientes campos falta o esta vacio en la peticion: accommodationId, beginningDate, endingDate, numberOfGuests, totalCost, bookingStatus, guestUserId"
+                message: "Uno de los siguientes campos falta o esta vacio en la peticion: accommodation, beginningDate, endingDate, numberOfGuests, totalCost, bookingStatus, guestUserId"
             }
         }
-
-
-        const { accommodationId, beginningDate, endingDate, numberOfGuests, totalCost, bookingStatus, guestUser, hostUser} = req.body
+        const { beginningDate, endingDate, numberOfGuests, totalCost, bookingStatus} = req.body
         
         const currentDate = new Date()
         if (beginningDate > endingDate) {
-            throw{ status: 400, message:"La fecha de inicio es psoterior a la de termino" }
+            throw{ status: 400, message:"La fecha de inicio es posterior a la de termino" }
         }
-        if(beginningDate < currentDate){
+        const bookingBeginDate = new Date(beginningDate);
+        if(bookingBeginDate < currentDate){
             throw{ status: 400, message:"La fecha de inicio es previa a la fecha actual" }
         }
 
         const newBooking = {
-            accommodationId,
+            accommodation: req.body.accommodation,
             beginningDate,
             endingDate,
             numberOfGuests,
@@ -43,7 +41,7 @@ const createBooking = async(req, res) =>{
         
         result = await BookingService.saveBooking(newBooking)
 
-        res.status(201).send({
+        return res.status(201).send({
             message: "Reservacion creada con éxito",
             booking: result
         })
@@ -64,7 +62,7 @@ const editBooking = async(req, res) => {
             }
         }
         const bookingId = req.params.bookingId
-        const {accommodationId, beginningDate, endingDate, numberOfGuests, totalCost, bookingStatus, guestUserId} = req.body
+        const {accommodation, beginningDate, endingDate, numberOfGuests, totalCost, bookingStatus, guestUserId} = req.body
         const beginDate =  new Date(beginningDate)
         const endDate = new Date(endingDate)
         const currentDate = new Date()
@@ -74,7 +72,7 @@ const editBooking = async(req, res) => {
         if(beginDate < currentDate){
             throw{ status: 400, message:"La fecha de inicio es previa a la fecha actual" }
         } 
-        await BookingService.updateBooking(bookingId,accommodationId, beginningDate, endingDate, numberOfGuests, totalCost, BookingStatus.CURRENT, guestUserId)
+        await BookingService.updateBooking(bookingId, accommodation, beginningDate, endingDate, numberOfGuests, totalCost, BookingStatus.CURRENT, guestUserId)
         res.status(200).send({
             message: "Reservacion actualizada exitosamente"
         })
@@ -119,7 +117,7 @@ const getBookingByAccommodationId = async(req, res) => {
         }else{
             result = allBookingsFound
         }
-        res.status(200).send({
+        return res.status(200).send({
             message: "Reservaciones recuperadas correctamente",
             bookings: result          
         })

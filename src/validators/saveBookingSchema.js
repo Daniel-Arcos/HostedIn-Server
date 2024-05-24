@@ -2,7 +2,7 @@ const { body, checkSchema, validationResult } = require('express-validator')
 const ID_MONGO_DB_SIZE = 24;
 
 const saveBookingSchema = {
-    accommodationId: {
+    accommodation: {
         exists: {
             errorMessage: 'accommodation cannot be null'
         }

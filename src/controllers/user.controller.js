@@ -197,6 +197,7 @@ const updateUserPassword = async(req, res) => {
 const getAccommodationsByUserId = async (req, res) => {
     try {
         const userId= req.params.userId
+        console.log(userId)
         const {atLeastOneBooking, status} = req.query
         let accommodations
         if(atLeastOneBooking){
@@ -207,11 +208,12 @@ const getAccommodationsByUserId = async (req, res) => {
         }else{
             accommodations = await AccommodationService.getAllOwnedAccommodations(userId)
         }
-        res.status(200).send({
+
+        return res.status(200).send({
             message:"Alojamientos recuperados exitosamente",
             accommodations})
     } catch (error) {
-        res
+        return res
             .status(error?.status || 500)
             .send({message: error?.message || error});
     }   

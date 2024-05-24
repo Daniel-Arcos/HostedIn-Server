@@ -17,7 +17,10 @@ const getAccommodationsByLocationAndId = async (lat, long, id) => {
                 }
             },
             user: { $ne: id }
-        }).populate('user')
+        }, '-multimedias').populate({
+            path: 'user',
+            select: '-password'
+        })
         return filteredAccomodations
     } catch (error) {
         throw {
@@ -33,14 +36,15 @@ const getAllAccommodations = async (id) => {
 
         let allAccommodations
         if (id) {
-            allAccommodations = await Accommodation.find({
-                user: { $ne: id }
-            }).populate({
+            allAccommodations = await Accommodation.find(
+                { user: { $ne: id }},
+                '-multimedias'
+            ).populate({
                 path: 'user',
                 select: '-password' 
             })
         } else {
-            allAccommodations =  await Accommodation.find().populate({
+            allAccommodations =  await Accommodation.find({}, '-multimedias').populate({
                 path: 'user',
                 select: '-password' 
             })
@@ -61,7 +65,9 @@ const getAllOwnedAccommodations = async (id) => {
         if (id) {
             allAccommodations = await Accommodation.find({
                 user: id
-            }).populate({
+            })
+            .select('-multimedias')
+            .populate({
                 path: 'user',
                 select: '-password' 
             })
@@ -87,7 +93,7 @@ const getOwnedBookedAccommodations = async (id) => {
             },
             {
                 $group: {
-                    _id : "$accommodationId"
+                    _id : "$accommodation"
                 }
             },
             {
@@ -103,6 +109,11 @@ const getOwnedBookedAccommodations = async (id) => {
             },
             {
                 $replaceRoot:{newRoot: "$accommodationsDetails"}
+            },
+            {
+                $project: {
+                    multimedia: 0
+                }
             }
         ])    
         return accommodationsFound
@@ -118,8 +129,10 @@ const getOwnedBookedAccommodations = async (id) => {
 const getGuestBookedAccommodations = async (id, status) => {
     try {
         let accommodationsFound
-        accommodationsFound = await Booking.find({guestUser:id, bookingStatus:status}).populate({
-            path: 'accommodationId',
+        accommodationsFound = await Booking.find({guestUser:id, bookingStatus:status})
+        .populate({
+            path: 'accommodation',
+            select: '-multimedias',
             populate:{
                 path: 'user',
                 select: '-password'
@@ -127,6 +140,7 @@ const getGuestBookedAccommodations = async (id, status) => {
         })  
         return accommodationsFound
     } catch (error) {
+        console.log(error)
         throw {
             status: error?.status || 500,
             message: error.message
