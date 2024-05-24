@@ -69,7 +69,55 @@ const createAccommodation = async (req, res) => {
     }
 }
 
+const updateAccommodation = async (req, res) => {
+    try {
+
+        const _id = req.params.accommodationId
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({
+                errors: errors.array(),
+                message: "Uno de los siguientes campos falta o esta vacio en la peticion: 'title', 'description', 'accommodationType', 'nightPrice', 'guestsNumber', 'roomsNumber', 'bedsNumber', 'bathroomsNumber', 'location'"
+            }); 
+        }
+
+        const { title, description, rules, accommodationType, nightPrice, guestsNumber, roomsNumber, bedsNumber, bathroomsNumber, location } = req.body
+
+        const accommodationUpdated = {
+            _id,
+            title,
+            description,
+            rules,
+            accommodationType,
+            nightPrice,
+            guestsNumber,
+            roomsNumber,
+            bedsNumber,
+            bathroomsNumber,
+            accommodationServices: req.body.accommodationServices || [],
+            location: {
+                type: 'Point',
+                coordinates: [location.longitude, location.latitude],
+                address: location.address
+            },
+            user: req.body.user._id
+        };
+
+        result = await AccommodationService.updateAccommodation(accommodationUpdated)
+
+        res.status(201).send({
+            message: "Alojamiento actualizado con éxito",
+            accommodation: result
+        })
+    } catch (error) {
+        return res
+            .status(error?.status || 500)
+            .send({message: error?.message || error});
+    }
+}
+
 module.exports = {
     createAccommodation,
-    getAccommodations
+    getAccommodations,
+    updateAccommodation
 }

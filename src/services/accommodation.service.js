@@ -165,8 +165,37 @@ const createAccommodation = async (accommodation) => {
     }
 }
 
+const updateAccommodation = async (accommodation) => {
+    try {
+        let accommodationFound = await Accommodation.findById(accommodation._id )
+        if (!accommodationFound) {
+            throw {
+                status: 404,
+                message: "El alojamiento no existe."
+            }
+        }
+
+        const savedAccommodation = await Accommodation.findOneAndUpdate({_id : accommodation._id}, {$set : accommodation}, {new: true});
+
+        foundAccommodation = await Accommodation.findById(savedAccommodation._id).populate({
+            path: 'user',
+            select: '-password'
+        })
+
+        return foundAccommodation
+
+    } catch (error) {
+        console.log(error)
+        throw {
+            status: error?.status || 500,
+            message: error.message
+        }
+    }
+}
+
 module.exports = { 
     createAccommodation,
+    updateAccommodation,
     getAllAccommodations,
     getAccommodationsByLocationAndId,
     getOwnedBookedAccommodations, 
