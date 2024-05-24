@@ -94,7 +94,9 @@ const getBooking = async(bookingId) => {
 
 const getAllBookingsByAccommodation = async (accommodationId)=> {
     try {
-        foundBookings = await Booking.find({accommodation : accommodationId}).populate({
+        foundBookings = await Booking.find({accommodation : accommodationId}, 
+            '-accommodation'
+        ).populate({
             path: 'hostUser',
             select: '-password'
         }).populate({

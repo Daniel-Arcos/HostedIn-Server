@@ -17,7 +17,10 @@ const getAccommodationsByLocationAndId = async (lat, long, id) => {
                 }
             },
             user: { $ne: id }
-        }).populate('user')
+        }, '-multimedias').populate({
+            path: 'user',
+            select: '-password'
+        })
         return filteredAccomodations
     } catch (error) {
         throw {
@@ -63,7 +66,7 @@ const getAllOwnedAccommodations = async (id) => {
             allAccommodations = await Accommodation.find({
                 user: id
             })
-            .select('-multimedia')
+            .select('-multimedias')
             .populate({
                 path: 'user',
                 select: '-password' 
