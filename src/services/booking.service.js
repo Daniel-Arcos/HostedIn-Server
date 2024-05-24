@@ -1,27 +1,58 @@
 const Booking = require('../models/Booking')
 const User = require('../models/User')
+const BookingStatuses = require('../models/BookingStatus')
 
 const saveBooking = async(booking) => {
     try {        
+        const bookingFound = await Booking.findOne({
+            accommodation: booking.accommodation,
+            guestUser: booking.guestUser,
+            bookingStatus: BookingStatuses.CURRENT
+        })
 
-        const bookingFound = await Booking.findOne({accommodationId: booking.accommodation._id, guestUser: booking.guestUser._id})
+        if (booking.hostUser == booking.guestUser){
+            throw{ status: 400, message:"No puedes reservar tu propio alojamiento" }
+        }
 
         if(bookingFound){
             throw{ status: 400, message:"Ya tienes una reservación para este alojamiento" }
         }        
-        //TO-DO : VERIFICAR QUE ESA FECHAS NO ESTEN RESERVADAS               
+
+        bookingsList = await Booking.find({accommodation: booking.accommodation, bookingStatus: BookingStatuses.CURRENT})
+
+        const bookingBeginDate = new Date(booking.beginningDate);
+        const bookingEndDate = new Date(booking.endingDate);
+        bookingsList.forEach(element => {
+            const elementStartDate = new Date(element.beginningDate);
+            const elementEndDate = new Date(element.endingDate);
+            if (bookingBeginDate <= elementEndDate && bookingEndDate >= elementStartDate){
+                throw{ status: 400, message:"Ya hay una reservación entre esas fechas" }
+            }
+        });
+    
+
         const newBooking = new Booking(booking)
         const savedBooking = await newBooking.save()
 
-        foundBooking = await Booking.findById({ _id: savedBooking._id}, '-accommodation').populate({
-            path: 'hostUser',
-            select: '-password'
-        }).populate({
-            path: 'guestUser',
-            select: '-password'
-        })
-        return foundBooking
-        
+        foundBooking = await Booking.findById({ _id: savedBooking._id}, '-accommodation')
+            .populate({
+                path: 'hostUser',
+                select: '-password'
+            })
+            .populate({
+                path: 'guestUser',
+                select: '-password'
+            })
+            .populate({
+                path: 'accommodation',
+                select: '-password',
+                populate: {
+                    path: 'user',
+                    select: 'fullName phoneNumber'
+                }
+            })
+
+        return foundBooking 
     } catch (error) {
         throw {
             status: error?.status || 500,

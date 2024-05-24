@@ -12,24 +12,24 @@ const createBooking = async(req, res) =>{
 
         const errors = validationResult(req)
         if (!errors.isEmpty()) {
-            console.log(errors)
             throw { status : 400,
                 errors: errors.array(),
-                message: "Uno de los siguientes campos falta o esta vacio en la peticion: accommodationId, beginningDate, endingDate, numberOfGuests, totalCost, bookingStatus, guestUserId"
+                message: "Uno de los siguientes campos falta o esta vacio en la peticion: accommodation, beginningDate, endingDate, numberOfGuests, totalCost, bookingStatus, guestUserId"
             }
         }
-        const { beginningDate, accommodation, endingDate, numberOfGuests, totalCost, bookingStatus} = req.body
+        const { beginningDate, endingDate, numberOfGuests, totalCost, bookingStatus} = req.body
         
         const currentDate = new Date()
         if (beginningDate > endingDate) {
-            throw{ status: 400, message:"La fecha de inicio es psoterior a la de termino" }
+            throw{ status: 400, message:"La fecha de inicio es posterior a la de termino" }
         }
-        if(beginningDate < currentDate){
+        const bookingBeginDate = new Date(beginningDate);
+        if(bookingBeginDate < currentDate){
             throw{ status: 400, message:"La fecha de inicio es previa a la fecha actual" }
         }
 
         const newBooking = {
-            accommodation: accommodation._id,
+            accommodation: req.body.accommodation,
             beginningDate,
             endingDate,
             numberOfGuests,
@@ -46,7 +46,6 @@ const createBooking = async(req, res) =>{
             booking: result
         })
     } catch (error) {
-        console.log(error)
         return res
             .status(error?.status || 500)
             .send({message: error?.message || error});
@@ -118,7 +117,6 @@ const getBookingByAccommodationId = async(req, res) => {
         }else{
             result = allBookingsFound
         }
-        console.log(result)
         return res.status(200).send({
             message: "Reservaciones recuperadas correctamente",
             bookings: result          
