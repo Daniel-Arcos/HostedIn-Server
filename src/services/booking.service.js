@@ -4,7 +4,7 @@ const User = require('../models/User')
 const saveBooking = async(booking) => {
     try {        
 
-        const bookingFound = await Booking.findOne({accommodationId: booking.accommodationId, guestUser: booking.guestUser._id})
+        const bookingFound = await Booking.findOne({accommodationId: booking.accommodation._id, guestUser: booking.guestUser._id})
 
         if(bookingFound){
             throw{ status: 400, message:"Ya tienes una reservación para este alojamiento" }
@@ -13,7 +13,7 @@ const saveBooking = async(booking) => {
         const newBooking = new Booking(booking)
         const savedBooking = await newBooking.save()
 
-        foundBooking = await Booking.findById(savedBooking._id).populate({
+        foundBooking = await Booking.findById({ _id: savedBooking._id}, '-accommodation').populate({
             path: 'hostUser',
             select: '-password'
         }).populate({
@@ -30,7 +30,7 @@ const saveBooking = async(booking) => {
     }
 }
 
-const updateBooking = async(bookingId, accommodationId, beginningDate, endingDate, numberOfGuests, totalCost, bookingStatus, guestUserId) => {
+const updateBooking = async(bookingId, accommodation, beginningDate, endingDate, numberOfGuests, totalCost, bookingStatus, guestUserId) => {
     try {         
         //TO-DO : VERIFICAR QUE ESA FEHCAS NO ESTEN RESERVADAS       
         foundBooking = await Booking.findById(bookingId)
@@ -38,7 +38,7 @@ const updateBooking = async(bookingId, accommodationId, beginningDate, endingDat
             throw{ status: 404, message:"la reservacion no existe " }
         }else{
            
-            const usersNames = await getHostAndGuestNames(accommodationId, guestUserId)
+            const usersNames = await getHostAndGuestNames(accommodation._id, guestUserId)
             foundBooking.beginningDate = beginningDate 
             foundBooking.endingDate = endingDate
             foundBooking.numberOfGuests = numberOfGuests
@@ -94,7 +94,7 @@ const getBooking = async(bookingId) => {
 
 const getAllBookingsByAccommodation = async (accommodationId)=> {
     try {
-        foundBookings = await Booking.find({accommodationId : accommodationId}).populate({
+        foundBookings = await Booking.find({accommodation : accommodationId}).populate({
             path: 'hostUser',
             select: '-password'
         }).populate({

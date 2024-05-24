@@ -17,19 +17,9 @@ const updateBookingSchema ={
             errorMessage: `bookingId is not valid`
         }
     },
-    accommodationId: {
+    accommodation: {
         exists: {
             errorMessage: 'accommodationId cannot be null'
-        }, 
-        isString: {
-            errorMessage: 'accommodationId must be a string'
-        },
-        notEmpty: {
-            errorMessage: 'accommodationId cannot be empty'
-        },           
-        custom: {
-            options: (value) => value.length === ID_MONGO_DB_SIZE,
-            errorMessage: `accommodationId is not valid`
         }
     },
     beginningDate:{

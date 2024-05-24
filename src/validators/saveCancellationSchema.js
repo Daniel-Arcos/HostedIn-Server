@@ -13,18 +13,18 @@ const saveCancellationSchema = {
                 const date = new Date(value);
                 return !isNaN(date.getTime());
             },
-            errorMessage: 'beginningDate must be a valid date'
+            errorMessage: 'date must be a valid date'
         }
     },
     reason: {
         exists: {
-            errorMessage: 'reviewDescription cannot be null'
+            errorMessage: 'reason cannot be null'
         },
         notEmpty: {
-            errorMessage: 'reviewDescription cannot be empty'
+            errorMessage: 'reason cannot be empty'
         },
         isString:{
-            errorMessage: 'reviewDescription must be String'
+            errorMessage: 'reason must be String'
         }
     },
     cancellator: {

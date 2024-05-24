@@ -20,3 +20,24 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hc
 
 GET http://localhost:3000/api/v1/accommodations
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOlsiR3Vlc3QiLCJIb3N0Il0sImlzcyI6IkpXVEhvc3RlZEluU2VydmVyIiwiYXVkIjoiSldUSG9zdGVkSW5DbGllbnRzIiwiaWF0IjoxNzE2MjM0MTkyLCJleHAiOjE3MTYyMzUzOTJ9.g46nD98nedS5_gH8-It3pTGJCWgHL_n1tnAsMlXSfmc
+
+###
+POST http://localhost:3000/api/v1/auth/signin
+Content-Type: application/json
+
+{
+  "email": "arcosdaniel445@gmail.com",
+  "password": "Asfixiars3#"
+}
+
+###
+POST http://localhost:3000/api/v1/cancellations
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiYXJjb3NkYW5pZWw0NDVAZ21haWwuY29tIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvZ2l2ZW5uYW1lIjoiRGFuaWVsIEdhcmNpYSAyIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjpbIkhvc3QiLCJHdWVzdCJdLCJpc3MiOiJKV1RIb3N0ZWRJblNlcnZlciIsImF1ZCI6IkpXVEhvc3RlZEluQ2xpZW50cyIsImlhdCI6MTcxNjQ4ODU2MSwiZXhwIjoxNzE2NDg5NzYxfQ.t8bbiftg-wO4Yc8BE3FKvVfeaxQlDsjyohlYxl2A980
+
+{
+  "cancellationDate": "2024-05-23",
+  "reason": "Ya no necesito un alojamiento",
+  "cancellator": "664c2e251dab9c985de9a083",
+  "booking" : "664ee4b3002606efd20f9465"
+}

@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const model = mongoose.model
 
 bookingShcema = new mongoose.Schema({
-    accommodationId:{
+    accommodation:{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'accomodations', 
         required: true
