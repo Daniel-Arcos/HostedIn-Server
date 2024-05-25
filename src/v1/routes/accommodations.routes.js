@@ -12,6 +12,7 @@ router.get('/:accommodationId/bookings', Authorize('Host'), bookingController.ge
 router.get('/', Authorize('Host,Guest'), accommodationsController.getAccommodations)
 router.get('/:accommodationId/reviews', Authorize('Host,Guest'), reviewController.getReviewByAccommodationId)
 router.put('/:accommodationId', Authorize('Host'), checkSchema(accommodationSchema), accommodationsController.updateAccommodation)
+router.delete('/:accommodationId', Authorize('Host'), accommodationsController.deleteAccommodation)
 
 
 module.exports = router

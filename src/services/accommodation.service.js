@@ -2,7 +2,11 @@ const { token } = require('morgan')
 const mongoose = require('mongoose');
 const Accommodation = require('../models/Accommodation')
 const Booking = require('../models/Booking')
-const Jwt = require('../security/Jwt')
+const BookingStatus = require('../models/BookingStatus')
+const Reviews = require('../models/Review')
+const Jwt = require('../security/Jwt');
+const Review = require('../models/Review');
+const Cancellation = require('../models/Cancellation') 
 
 const getAccommodationsByLocationAndId = async (lat, long, id) => {
     try {
@@ -199,6 +203,39 @@ const updateAccommodation = async (accommodation) => {
         return foundAccommodation
 
     } catch (error) {
+        throw {
+            status: error?.status || 500,
+            message: error.message
+        }
+    }
+}
+
+const deleteAccommodation = async (accommodationId) =>{
+    try {
+        let accommodationFound = await Accommodation.findById(accommodationId )
+        if (!accommodationFound) {
+            throw {
+                status: 404,
+                message: "El alojamiento no existe."
+            }
+        }
+        const hasBookings = await Booking.findOne({accommodation : accommodationId, bookingStatus : BookingStatus.CURRENT})
+        if (hasBookings) {
+            throw {
+                status: 400,
+                message: "El alojamiento todavia tiene reservaciones pendientes."
+            }
+        }
+        
+        const bookings = await Booking.find({ accommodation: accommodationId });
+        const bookingsId = bookings.map(book => book._id);
+        await Accommodation.deleteOne({ _id: accommodationId });
+        await Review.deleteMany({ accommodation: accommodationId });
+        await Cancellation.deleteMany({ booking: { $in: bookingsId } });
+        await Booking.deleteMany({ accommodation: accommodationId });
+
+        return "Alojamiento y recursos relacionado borrados exitosamente"
+    } catch (error) {
         console.log(error)
         throw {
             status: error?.status || 500,
@@ -214,5 +251,6 @@ module.exports = {
     getAccommodationsByLocationAndId,
     getOwnedBookedAccommodations, 
     getGuestBookedAccommodations,
-    getAllOwnedAccommodations
+    getAllOwnedAccommodations,
+    deleteAccommodation
 }

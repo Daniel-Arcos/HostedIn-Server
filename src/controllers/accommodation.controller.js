@@ -116,8 +116,30 @@ const updateAccommodation = async (req, res) => {
     }
 }
 
+
+const deleteAccommodation = async (req, res) => {
+    try {
+
+        const _id = req.params.accommodationId       
+        result = await AccommodationService.deleteAccommodation(_id)
+
+        console.log(_id, result)
+        res.status(200).send({
+            message: result
+        })
+
+    } catch (error) {
+        return res
+            .status(error?.status || 500)
+            .send({message: error?.message || error});
+    }
+}
+
+
+
 module.exports = {
     createAccommodation,
     getAccommodations,
-    updateAccommodation
+    updateAccommodation,
+    deleteAccommodation
 }
