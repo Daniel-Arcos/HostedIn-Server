@@ -518,6 +518,110 @@
         }
       }
     },
+    "/api/v1/accommodations/{accommodationId}": {
+      "put": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "accommodationId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "accommodationServices": {
+                  "example": "any"
+                },
+                "user": {
+                  "example": "any"
+                },
+                "title": {
+                  "example": "any"
+                },
+                "description": {
+                  "example": "any"
+                },
+                "rules": {
+                  "example": "any"
+                },
+                "accommodationType": {
+                  "example": "any"
+                },
+                "nightPrice": {
+                  "example": "any"
+                },
+                "guestsNumber": {
+                  "example": "any"
+                },
+                "roomsNumber": {
+                  "example": "any"
+                },
+                "bedsNumber": {
+                  "example": "any"
+                },
+                "bathroomsNumber": {
+                  "example": "any"
+                },
+                "location": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "delete": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "accommodationId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
     "/api/v1/bookings/": {
       "post": {
         "description": "",
@@ -533,6 +637,9 @@
             "schema": {
               "type": "object",
               "properties": {
+                "accommodation": {
+                  "example": "any"
+                },
                 "guestUser": {
                   "example": "any"
                 },
@@ -540,9 +647,6 @@
                   "example": "any"
                 },
                 "beginningDate": {
-                  "example": "any"
-                },
-                "accommodation": {
                   "example": "any"
                 },
                 "endingDate": {
