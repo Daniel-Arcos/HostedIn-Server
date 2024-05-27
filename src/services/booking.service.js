@@ -146,6 +146,28 @@ const getAllBookingsByAccommodation = async (accommodationId)=> {
     }
 }
 
+const getGuestBookings = async (id, status) => {
+    try {
+        let accommodationsFound
+        accommodationsFound = await Booking.find({guestUser:id, bookingStatus:status})
+        .select('-guestUser -hostUser')
+        .populate({
+            path: 'accommodation',
+            select: '-multimedias',
+            populate:{
+                path: 'user',
+                select: '-password'
+            }
+        }) 
+        return accommodationsFound
+    } catch (error) {
+        throw {
+            status: error?.status || 500,
+            message: error.message
+        }
+    }
+}
+
 const deleteBooking = async(bookingId) => {
     try {
         const bookingFound = await Booking.findById(bookingId)
@@ -170,6 +192,7 @@ module.exports  = {
     updateBooking,
     getBooking,
     getAllBookingsByAccommodation,
+    getGuestBookings,
     deleteBooking
 }
 

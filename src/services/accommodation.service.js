@@ -116,7 +116,8 @@ const getOwnedBookedAccommodations = async (id) => {
             },
             {
                 $project: {
-                    multimedia: 0
+                    multimedias: 0,
+                    user: 0                    
                 }
             }
         ])    
@@ -130,27 +131,6 @@ const getOwnedBookedAccommodations = async (id) => {
     }
 }
 
-const getGuestBookedAccommodations = async (id, status) => {
-    try {
-        let accommodationsFound
-        accommodationsFound = await Booking.find({guestUser:id, bookingStatus:status})
-        .populate({
-            path: 'accommodation',
-            select: '-multimedias',
-            populate:{
-                path: 'user',
-                select: '-password'
-            }
-        })  
-        return accommodationsFound
-    } catch (error) {
-        console.log(error)
-        throw {
-            status: error?.status || 500,
-            message: error.message
-        }
-    }
-}
 
 
 const createAccommodation = async (accommodation) => {
@@ -250,7 +230,6 @@ module.exports = {
     getAllAccommodations,
     getAccommodationsByLocationAndId,
     getOwnedBookedAccommodations, 
-    getGuestBookedAccommodations,
     getAllOwnedAccommodations,
     deleteAccommodation
 }

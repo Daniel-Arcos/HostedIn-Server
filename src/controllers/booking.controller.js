@@ -155,12 +155,31 @@ const deleteBookingById = async(req, res) => {
     }
 }
 
+const getGuestBookings = async (req, res) => {
+    try {
+        const userId= req.params.userId
+        const {status} = req.query
+        let bookings
+       if(status){
+            bookings = await BookingService.getGuestBookings(userId,status)
+        }
+        return res.status(200).send({
+            message:"Reservaciones recuperadas exitosamente",
+            bookings})
+    } catch (error) {
+        return res
+            .status(error?.status || 500)
+            .send({message: error?.message || error});
+    }   
+}
+
 module.exports = {
     createBooking,
     editBooking,
     getBookingById,
     getBookingByAccommodationId,
-    deleteBookingById
+    deleteBookingById, 
+    getGuestBookings
 }
 
 

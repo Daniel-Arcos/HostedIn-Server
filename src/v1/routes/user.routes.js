@@ -1,5 +1,6 @@
 const express = require('express')
 const userController = require('../../controllers/user.controller.js')
+const bookingController = require('../../controllers/booking.controller.js')
 const router = express.Router()
 const { checkSchema } = require('express-validator')
 const { changePasswordSchema } = require('../../validators/changePasswordShcema.js')
@@ -12,5 +13,6 @@ router.post('/passwords', userController.sendUserEmail)
 router.post('/passwords/code', userController.userCodeVerification)
 router.patch('/passwords', checkSchema(changePasswordSchema), userController.updateUserPassword)
 router.get('/:userId/accommodations', userController.getAccommodationsByUserId)
+router.get('/:userId/bookings', bookingController.getGuestBookings)
 
 module.exports = router
