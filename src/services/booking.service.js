@@ -193,12 +193,26 @@ const deleteBooking = async(bookingId) => {
     }
 }
 
+const checkOverdueBookings = async() => {
+    try {
+        const todaysDate = new Date()
+
+        await Booking.updateMany(
+            {endingDate: { $lt : todaysDate} },
+            { $set : { bookingStatus: BookingStatuses.OVERDUE}}
+        )
+    } catch (error) {
+        throw error;
+    }
+}
+
 module.exports  = {
     saveBooking, 
     updateBooking,
     getBooking,
     getAllBookingsByAccommodation,
     getGuestBookings,
-    deleteBooking
+    deleteBooking,
+    checkOverdueBookings
 }
 
