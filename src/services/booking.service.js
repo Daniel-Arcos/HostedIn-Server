@@ -126,13 +126,19 @@ const getBooking = async(bookingId) => {
 const getAllBookingsByAccommodation = async (accommodationId)=> {
     try {
         foundBookings = await Booking.find({accommodation : accommodationId}, 
-            '-accommodation'
         ).populate({
             path: 'hostUser',
             select: '-password'
         }).populate({
             path: 'guestUser',
             select: '-password'
+        }).populate({
+            path: 'accommodation',
+            select: '-multimedias',
+            populate:{
+                path: 'user',
+                select: '-password'
+            }
         })
         if(!foundBookings) {
             throw{ status: 404, message:"No hay reservaciones para este alojamiento" }
