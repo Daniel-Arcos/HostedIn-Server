@@ -8,6 +8,7 @@ require('./database')
 const v1Router = require("./v1/routes")
 const swaggerUi = require('swagger-ui-express')
 const swaggerFile = require('../swagger-output.json')
+const cron = require('./utils/OverdueBookingsChecker')
 
 const morgan = require('morgan')
 

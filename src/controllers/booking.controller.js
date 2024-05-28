@@ -173,13 +173,23 @@ const getGuestBookings = async (req, res) => {
     }   
 }
 
+const checkOverdueBookigns = async() =>{
+    try {
+        await BookingService.checkOverdueBookings()
+      
+    } catch (error) {
+        console.log(error)
+    } 
+}
+
 module.exports = {
     createBooking,
     editBooking,
     getBookingById,
     getBookingByAccommodationId,
     deleteBookingById, 
-    getGuestBookings
+    getGuestBookings, 
+    checkOverdueBookigns
 }
 
 
