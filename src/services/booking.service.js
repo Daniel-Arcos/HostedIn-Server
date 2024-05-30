@@ -152,10 +152,32 @@ const getAllBookingsByAccommodation = async (accommodationId)=> {
     }
 }
 
-const getGuestBookings = async (id, status) => {
+const getCurrentGuestBookings = async (id) => {
     try {
         let accommodationsFound
-        accommodationsFound = await Booking.find({guestUser:id, bookingStatus:status})
+        accommodationsFound = await Booking.find({guestUser:id, bookingStatus:BookingStatuses.CURRENT})
+        .select('-guestUser -hostUser')
+        .populate({
+            path: 'accommodation',
+            select: '-multimedias',
+            populate:{
+                path: 'user',
+                select: '-password'
+            }
+        }) 
+        return accommodationsFound
+    } catch (error) {
+        throw {
+            status: error?.status || 500,
+            message: error.message
+        }
+    }
+}
+
+const getOverdueGuestBookings = async (id) => {
+    try {
+        let accommodationsFound
+        accommodationsFound = await Booking.find({guestUser:id, $or:[{bookingStatus:BookingStatuses.CANCELLED}, {bookingStatus:BookingStatuses.OVERDUE}]})
         .select('-guestUser -hostUser')
         .populate({
             path: 'accommodation',
@@ -211,7 +233,8 @@ module.exports  = {
     updateBooking,
     getBooking,
     getAllBookingsByAccommodation,
-    getGuestBookings,
+    getCurrentGuestBookings,
+    getOverdueGuestBookings,
     deleteBooking,
     checkOverdueBookings
 }

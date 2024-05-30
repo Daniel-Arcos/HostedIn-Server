@@ -194,7 +194,7 @@ const updateUserPassword = async(req, res) => {
     }
 }
 
-const getAccommodationsByUserId = async (req, res) => {
+const getHostAccommodationsByUserId = async (req, res) => {
     try {
         const userId= req.params.userId
         const {atLeastOneBooking} = req.query
@@ -222,5 +222,5 @@ module.exports = {
     sendUserEmail,
     userCodeVerification, 
     updateUserPassword,
-    getAccommodationsByUserId
+    getHostAccommodationsByUserId
 }
