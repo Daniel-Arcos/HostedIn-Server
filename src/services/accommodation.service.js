@@ -69,8 +69,7 @@ const getAllOwnedAccommodations = async (id) => {
         if (id) {
             allAccommodations = await Accommodation.find({
                 user: id
-            })
-            .select('-multimedias')
+            }, '-multimedias')
             .populate({
                 path: 'user',
                 select: '-password' 
@@ -183,7 +182,7 @@ const updateAccommodation = async (accommodation) => {
 
         const savedAccommodation = await Accommodation.findOneAndUpdate({_id : accommodation._id}, {$set : accommodation}, {new: true});
 
-        foundAccommodation = await Accommodation.findById(savedAccommodation._id).populate({
+        foundAccommodation = await Accommodation.findById(savedAccommodation._id, '-multimedias').populate({
             path: 'user',
             select: '-password',
             select: '-profilePhoto'
