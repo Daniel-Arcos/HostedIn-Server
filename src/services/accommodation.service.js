@@ -1,4 +1,3 @@
-zconst { token } = require('morgan')
 const mongoose = require('mongoose');
 const Accommodation = require('../models/Accommodation')
 const Booking = require('../models/Booking')
