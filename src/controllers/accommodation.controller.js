@@ -123,7 +123,6 @@ const deleteAccommodation = async (req, res) => {
         const _id = req.params.accommodationId       
         result = await AccommodationService.deleteAccommodation(_id)
 
-        console.log(_id, result)
         res.status(200).send({
             message: result
         })

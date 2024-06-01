@@ -4,7 +4,6 @@ const jwt = require('../security/Jwt')
 const { validationResult } = require('express-validator')
 const Accommodation = require('../models/Accommodation')
 const AccommodationService = require('../services/accommodation.service')
-const { crossOriginResourcePolicy } = require('helmet')
 
 const getUserById = async (req, res) => {
     try {
@@ -39,6 +38,15 @@ const getUserById = async (req, res) => {
 
 const updateUserById = async (req, res) => {
     try {
+
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({
+                errors: errors.array(),
+                message: "Uno de los campos falta, esta vacio o es erroneo en la peticion"
+            }); 
+        }
+
         const userId = req.params.userId;
 
         if (userId == null) {
@@ -173,7 +181,6 @@ const updateUserPassword = async(req, res) => {
         
         const errors = validationResult(req)
         if (!errors.isEmpty()) {
-            console.log(errors)
             throw { status : 400,
                 
                 errors: errors.array(),

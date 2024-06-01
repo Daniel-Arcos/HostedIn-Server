@@ -24,7 +24,6 @@ const sendCodeVerificacion = async (email, code) =>{
 
     try {
         await transporter.sendMail(mailOptions);
-        console.log("Code sent");
         return true;
     } catch (error) {
         throw {
