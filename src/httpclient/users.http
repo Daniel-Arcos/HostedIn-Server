@@ -41,3 +41,17 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hc
   "cancellator": "664c2e251dab9c985de9a083",
   "booking" : "664ee4b3002606efd20f9465"
 }
+
+###
+PUT http://localhost:3000/api/v1/users/6655060d02e7c1edb6a326c5
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiYXJjb3NkYW5pZWw0NDVAZ21haWwuY29tIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvZ2l2ZW5uYW1lIjoiRGFuaWVsIEdhcmNpYSAyIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjpbIkhvc3QiLCJHdWVzdCJdLCJpc3MiOiJKV1RIb3N0ZWRJblNlcnZlciIsImF1ZCI6IkpXVEhvc3RlZEluQ2xpZW50cyIsImlhdCI6MTcxNjQ4ODU2MSwiZXhwIjoxNzE2NDg5NzYxfQ.t8bbiftg-wO4Yc8BE3FKvVfeaxQlDsjyohlYxl2A980
+
+{
+    "email": "eduardo.gd17@gmail.com",
+    "fullName": "Eduardo Garcia Diaz",
+    "birthDate": "2003/02/02",
+    "phoneNumber": "2288304609",
+    "occupation" : "Ingeniero de Software",
+    "residence" : "Xalapa"
+}
