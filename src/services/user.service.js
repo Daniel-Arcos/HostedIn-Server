@@ -119,7 +119,7 @@ const sendUserCode = async (email) => {
                 }
                 else{
                     throw {
-                        status: 200,
+                        status: 202,
                         message: "Existe un codigo de recuperacion vigente."
                     }
                 }               

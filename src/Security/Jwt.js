@@ -18,7 +18,7 @@ const sign = (email, name, roles) => {
 
 const confirmEmailCode = (code) => {
     return jwt.sign({code :code}, jwtSecret, {
-        expiresIn: 86400
+        expiresIn: 600
     })
 }
 
@@ -28,7 +28,7 @@ const verifyToken = (token) => {
         return decoded;
     } catch (error) {
         throw {
-            status: 401,
+            status: 400,
             message: "Token no valido"
         }
     }

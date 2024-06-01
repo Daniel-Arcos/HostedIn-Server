@@ -13,6 +13,6 @@ router.get('/:userId/accommodations', Authorize('Host'), userController.getHostA
 router.get('/:userId/bookings',Authorize('Guest'), bookingController.getGuestBookings)
 router.post('/passwords', userController.sendUserEmail)
 router.post('/passwords/code', userController.userCodeVerification)
-router.patch('/passwords', checkSchema(changePasswordSchema), userController.updateUserPassword)
+router.patch('', checkSchema(changePasswordSchema), userController.updateUserPassword)
 
 module.exports = router
