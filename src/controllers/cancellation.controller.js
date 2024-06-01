@@ -5,7 +5,6 @@ const createCancellation = async(req, res) => {
     try {
         const errors = validationResult(req)
         if (!errors.isEmpty()) {
-            console.log(errors)
             throw { status : 400,
                 errors: errors.array(),
                 message: "Hay un error en la peticion"

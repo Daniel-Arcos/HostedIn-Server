@@ -166,7 +166,6 @@ const getGuestBookings = async (req, res) => {
         else{
             bookings = await BookingService.getOverdueGuestBookings(userId)
         }
-        console.log(bookings)
         return res.status(200).send({
             message:"Reservaciones recuperadas exitosamente",
             bookings})

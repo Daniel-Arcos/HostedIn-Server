@@ -27,7 +27,6 @@ const signUp = async (req, res) => {
             }
         })
     } catch (error) {
-        console.log(error)
         return res
             .status(error?.status || 500)
             .send({message: error?.message || error});

@@ -10,50 +10,99 @@ const Cancellation = require('../models/Cancellation')
 
 const getAccommodationsByLocationAndId = async (lat, long, id) => {
     try {
-        const filteredAccomodations = await Accommodation.find({
-            location: {
-                $near: {
-                    $geometry: {
+        const filteredAccommodations = await Accommodation.aggregate([
+            {
+                $geoNear: {
+                    near: {
                         type: "Point",
                         coordinates: [parseFloat(long), parseFloat(lat)]
                     },
-                    $maxDistance: 8000
+                    distanceField: "dist.calculated",
+                    maxDistance: 8000,
+                    spherical: true
                 }
             },
-            user: { $ne: id }
-        }, '-multimedias').populate({
+            {
+                $match: {
+                    user: { $ne: new mongoose.Types.ObjectId(id) }
+                }
+            },
+            {
+                $lookup: {
+                    from: 'reviews',
+                    localField: '_id',
+                    foreignField: 'accommodation',
+                    as: 'reviews'
+                }
+            },
+            {
+                $addFields: {
+                    rate: {
+                        $ifNull: [{ $avg: "$reviews.rating" }, 0]
+                    }
+                }
+            },
+            {
+                $project: {
+                    multimedias: 0,
+                    "user.password": 0,
+                    reviews: 0
+                }
+            }
+        ]);
+
+        await Accommodation.populate(filteredAccommodations, {
             path: 'user',
             select: '-password'
-        })
-        return filteredAccomodations
+        });
+
+        return filteredAccommodations;
     } catch (error) {
         throw {
             status: error?.status || 500,
             message: error.message
         }
     }
-    
 }
 
 const getAllAccommodations = async (id) => {
     try {
+        let matchCondition = id ? { user: { $ne: new mongoose.Types.ObjectId(id) } } : {};
 
-        let allAccommodations
-        if (id) {
-            allAccommodations = await Accommodation.find(
-                { user: { $ne: id }},
-                '-multimedias'
-            ).populate({
-                path: 'user',
-                select: '-password' 
-            })
-        } else {
-            allAccommodations =  await Accommodation.find({}, '-multimedias').populate({
-                path: 'user',
-                select: '-password' 
-            })
-        }
-        return allAccommodations
+        const allAccommodations = await Accommodation.aggregate([
+            {
+                $match: matchCondition
+            },
+            {
+                $lookup: {
+                    from: 'reviews',
+                    localField: '_id',
+                    foreignField: 'accommodation',
+                    as: 'reviews'
+                }
+            },
+            {
+                $addFields: {
+                    rate: {
+                        $ifNull: [{ $avg: "$reviews.rating" }, 0]
+                    }
+                }
+            },
+            {
+                $project: {
+                    multimedias: 0,
+                    "user.password": 0,
+                    reviews: 0 // Optionally exclude the reviews array
+                }
+            }
+        ]);
+
+        await Accommodation.populate(allAccommodations, {
+            path: 'user',
+            select: '-password'
+        });
+
+        return allAccommodations;
     } catch (error) {
         throw {
             status: error?.status || 500,
@@ -61,22 +110,51 @@ const getAllAccommodations = async (id) => {
         }
     }
 }
-
 const getAllOwnedAccommodations = async (id) => {
     try {
-
-        let allAccommodations
-        if (id) {
-            allAccommodations = await Accommodation.find({
-                user: id
-            })
-            .select('-multimedias')
-            .populate({
-                path: 'user',
-                select: '-password' 
-            })
+        if (!id) {
+            throw {
+                status: 400,
+                message: "User ID is required"
+            };
         }
-        return allAccommodations
+
+        const allAccommodations = await Accommodation.aggregate([
+            {
+                $match: {
+                    user: new mongoose.Types.ObjectId(id)
+                }
+            },
+            {
+                $lookup: {
+                    from: 'reviews',
+                    localField: '_id',
+                    foreignField: 'accommodation',
+                    as: 'reviews'
+                }
+            },
+            {
+                $addFields: {
+                    rate: {
+                        $ifNull: [{ $avg: "$reviews.rating" }, 0]
+                    }
+                }
+            },
+            {
+                $project: {
+                    multimedias: 0,
+                    "user.password": 0,
+                    reviews: 0 
+                }
+            }
+        ]);
+
+        await Accommodation.populate(allAccommodations, {
+            path: 'user',
+            select: '-password'
+        });
+
+        return allAccommodations;
     } catch (error) {
         throw {
             status: error?.status || 500,
@@ -84,7 +162,6 @@ const getAllOwnedAccommodations = async (id) => {
         }
     }
 }
-
 const getOwnedBookedAccommodations = async (id) => {
     try {
         let accommodationsFound
@@ -123,7 +200,6 @@ const getOwnedBookedAccommodations = async (id) => {
         ])    
         return accommodationsFound
     } catch (error) {
-        console.log(error)
         throw {
             status: error?.status || 500,
             message: error.message
@@ -225,7 +301,6 @@ const deleteAccommodation = async (accommodationId) =>{
 
         return "Alojamiento y recursos relacionado borrados exitosamente"
     } catch (error) {
-        console.log(error)
         throw {
             status: error?.status || 500,
             message: error.message

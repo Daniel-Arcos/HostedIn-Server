@@ -173,7 +173,6 @@ const updateUserPassword = async(req, res) => {
         
         const errors = validationResult(req)
         if (!errors.isEmpty()) {
-            console.log(errors)
             throw { status : 400,
                 
                 errors: errors.array(),
