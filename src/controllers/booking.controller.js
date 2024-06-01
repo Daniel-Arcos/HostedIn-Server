@@ -161,9 +161,13 @@ const getGuestBookings = async (req, res) => {
         const userId= req.params.userId
         const {status} = req.query
         let bookings
-       if(status){
-            bookings = await BookingService.getGuestBookings(userId,status)
+       if(status === BookingStatus.CURRENT){
+            bookings = await BookingService.getCurrentGuestBookings(userId)
         }
+        else{
+            bookings = await BookingService.getOverdueGuestBookings(userId)
+        }
+        console.log(bookings)
         return res.status(200).send({
             message:"Reservaciones recuperadas exitosamente",
             bookings})
@@ -174,13 +178,23 @@ const getGuestBookings = async (req, res) => {
     }   
 }
 
+const checkOverdueBookigns = async() =>{
+    try {
+        await BookingService.checkOverdueBookings()
+      
+    } catch (error) {
+        console.log(error)
+    } 
+}
+
 module.exports = {
     createBooking,
     editBooking,
     getBookingById,
     getBookingByAccommodationId,
     deleteBookingById, 
-    getGuestBookings
+    getGuestBookings, 
+    checkOverdueBookigns
 }
 
 

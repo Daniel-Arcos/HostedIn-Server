@@ -126,13 +126,19 @@ const getBooking = async(bookingId) => {
 const getAllBookingsByAccommodation = async (accommodationId)=> {
     try {
         foundBookings = await Booking.find({accommodation : accommodationId}, 
-            '-accommodation'
         ).populate({
             path: 'hostUser',
             select: '-password'
         }).populate({
             path: 'guestUser',
             select: '-password'
+        }).populate({
+            path: 'accommodation',
+            select: '-multimedias',
+            populate:{
+                path: 'user',
+                select: '-password'
+            }
         })
         if(!foundBookings) {
             throw{ status: 404, message:"No hay reservaciones para este alojamiento" }
@@ -146,10 +152,32 @@ const getAllBookingsByAccommodation = async (accommodationId)=> {
     }
 }
 
-const getGuestBookings = async (id, status) => {
+const getCurrentGuestBookings = async (id) => {
     try {
         let accommodationsFound
-        accommodationsFound = await Booking.find({guestUser:id, bookingStatus:status})
+        accommodationsFound = await Booking.find({guestUser:id, bookingStatus:BookingStatuses.CURRENT})
+        .select('-guestUser -hostUser')
+        .populate({
+            path: 'accommodation',
+            select: '-multimedias',
+            populate:{
+                path: 'user',
+                select: '-password'
+            }
+        }) 
+        return accommodationsFound
+    } catch (error) {
+        throw {
+            status: error?.status || 500,
+            message: error.message
+        }
+    }
+}
+
+const getOverdueGuestBookings = async (id) => {
+    try {
+        let accommodationsFound
+        accommodationsFound = await Booking.find({guestUser:id, $or:[{bookingStatus:BookingStatuses.CANCELLED}, {bookingStatus:BookingStatuses.OVERDUE}]})
         .select('-guestUser -hostUser')
         .populate({
             path: 'accommodation',
@@ -187,12 +215,27 @@ const deleteBooking = async(bookingId) => {
     }
 }
 
+const checkOverdueBookings = async() => {
+    try {
+        const todaysDate = new Date()
+
+        await Booking.updateMany(
+            {endingDate: { $lt : todaysDate} },
+            { $set : { bookingStatus: BookingStatuses.OVERDUE}}
+        )
+    } catch (error) {
+        throw error;
+    }
+}
+
 module.exports  = {
     saveBooking, 
     updateBooking,
     getBooking,
     getAllBookingsByAccommodation,
-    getGuestBookings,
-    deleteBooking
+    getCurrentGuestBookings,
+    getOverdueGuestBookings,
+    deleteBooking,
+    checkOverdueBookings
 }
 

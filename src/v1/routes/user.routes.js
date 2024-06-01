@@ -9,10 +9,10 @@ const Authorize = require('../../middlewares/auth.middleware.js')
 router.get('/:userId', Authorize('Guest,Host'), userController.getUserById)
 router.put('/:userId', Authorize('Guest,Host'), userController.updateUserById)
 router.delete('/:userId', Authorize('Guest,Host'), userController.deleteUserById)
+router.get('/:userId/accommodations', Authorize('Host'), userController.getHostAccommodationsByUserId)
+router.get('/:userId/bookings',Authorize('Guest'), bookingController.getGuestBookings)
 router.post('/passwords', userController.sendUserEmail)
 router.post('/passwords/code', userController.userCodeVerification)
 router.patch('/passwords', checkSchema(changePasswordSchema), userController.updateUserPassword)
-router.get('/:userId/accommodations', userController.getAccommodationsByUserId)
-router.get('/:userId/bookings', bookingController.getGuestBookings)
 
 module.exports = router

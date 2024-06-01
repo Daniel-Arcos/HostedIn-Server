@@ -173,11 +173,20 @@ const updateAccommodation = async (accommodation) => {
             }
         }
 
+        const hasBookings = await Booking.findOne({accommodation : accommodation._id, bookingStatus : BookingStatus.CURRENT})
+        if (hasBookings) {
+            throw {
+                status: 400,
+                message: "El alojamiento todavia tiene reservaciones pendientes."
+            }
+        }
+
         const savedAccommodation = await Accommodation.findOneAndUpdate({_id : accommodation._id}, {$set : accommodation}, {new: true});
 
         foundAccommodation = await Accommodation.findById(savedAccommodation._id).populate({
             path: 'user',
-            select: '-password'
+            select: '-password',
+            select: '-profilePhoto'
         })
 
         return foundAccommodation
