@@ -14,7 +14,7 @@ const saveBooking = async(booking) => {
             throw{ status: 400, message:"No puedes reservar tu propio alojamiento" }
         }
 
-        if(bookingFound){
+        if (bookingFound){
             throw{ status: 400, message:"Ya tienes una reservación para este alojamiento" }
         }        
 
@@ -61,46 +61,6 @@ const saveBooking = async(booking) => {
     }
 }
 
-const updateBooking = async(bookingId, accommodation, beginningDate, endingDate, numberOfGuests, totalCost, bookingStatus, guestUserId) => {
-    try {         
-        //TO-DO : VERIFICAR QUE ESA FEHCAS NO ESTEN RESERVADAS       
-        foundBooking = await Booking.findById(bookingId)
-        if(!foundBooking) {
-            throw{ status: 404, message:"la reservacion no existe " }
-        }else{
-           
-            const usersNames = await getHostAndGuestNames(accommodation._id, guestUserId)
-            foundBooking.beginningDate = beginningDate 
-            foundBooking.endingDate = endingDate
-            foundBooking.numberOfGuests = numberOfGuests
-            foundBooking.totalCost = totalCost 
-            foundBooking.bookingStatus = bookingStatus
-            foundBooking.guetName = usersNames.guestUserName.fullName
-            foundBooking.hostName = "usersNames"
-            
-            await foundBooking.save()     
-        }
-    } catch (error) {
-        throw {
-            status: error?.status || 500,
-            message: error.message
-        }
-    }
-}
-
-
-async function getHostAndGuestNames(accommodationId, guestUserId){
-    const guestUserName = await User.findById(guestUserId)
-    if(!guestUserName){ throw{ status: 400, message:"BNo existe el huesped en la BD" } }
-    
-    // const accommodationFound = await User.findById(accommodationId)
-    // if(!accommodationFound){ throw{ status: 400, message:"El alojamiento no existe" } }
-
-    const hostUserName = await User.findById(guestUserId)
-    // if(!hostUserName){ throw{ status: 400, message:"El host no existe" } }
-
-    return {guestUserName, hostUserName}
-}
 
 const getBooking = async(bookingId) => {
     try {
@@ -230,7 +190,6 @@ const checkOverdueBookings = async() => {
 
 module.exports  = {
     saveBooking, 
-    updateBooking,
     getBooking,
     getAllBookingsByAccommodation,
     getCurrentGuestBookings,

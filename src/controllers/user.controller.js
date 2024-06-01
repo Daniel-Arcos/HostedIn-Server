@@ -39,6 +39,15 @@ const getUserById = async (req, res) => {
 
 const updateUserById = async (req, res) => {
     try {
+
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({
+                errors: errors.array(),
+                message: "Uno de los campos falta, esta vacio o es erroneo en la peticion"
+            }); 
+        }
+
         const userId = req.params.userId;
 
         if (userId == null) {

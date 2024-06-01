@@ -37,14 +37,13 @@ const getUser = async (userId) => {
 
 const editAccount = async (userId, userToEdit) => {
     try {
-
         if (typeof userId !== 'string' || userId.trim() === '' || userId.length !== ID_MONGO_DB_SIZE) {
             throw {
                 status: 400,
                 message: "El ID proporcionado no es válido."
             };
         }
-        if (userToEdit.password) {
+        if (userToEdit.password !== null && userToEdit.password && userToEdit.password.trim() !== ''){
             userToEdit.password = await User.encryptPassword(userToEdit.password)
         }
         const userFound = await User.findByIdAndUpdate(userId, userToEdit, {

@@ -1,4 +1,4 @@
-const { token } = require('morgan')
+zconst { token } = require('morgan')
 const mongoose = require('mongoose');
 const Accommodation = require('../models/Accommodation')
 const Booking = require('../models/Booking')
@@ -259,7 +259,7 @@ const updateAccommodation = async (accommodation) => {
 
         const savedAccommodation = await Accommodation.findOneAndUpdate({_id : accommodation._id}, {$set : accommodation}, {new: true});
 
-        foundAccommodation = await Accommodation.findById(savedAccommodation._id).populate({
+        foundAccommodation = await Accommodation.findById(savedAccommodation._id, '-multimedias').populate({
             path: 'user',
             select: '-password',
             select: '-profilePhoto'
