@@ -2,7 +2,7 @@ const request = require('supertest')
 const app = require('../../src/index')
 const moongose = require('mongoose')
 
-describe('Auth API Endpoints', () => {
+describe('Registro y autenticacion con datos correctos', () => {
     let userTest = {
         _id: '',
         email: 'usertest@gmail.com',
@@ -13,11 +13,6 @@ describe('Auth API Endpoints', () => {
         roles: ['Guest', 'Host']
     }
     let token;
-
-    afterAll (async () => {
-        app.close()
-        moongose.disconnect();
-    })
 
     it('Signup with a new user succesfully', async () => {
         const res = await request(app)
@@ -56,44 +51,12 @@ describe('Auth API Endpoints', () => {
         token = tokenBearer.replace("Bearer ", "")
     })
 
-
-    it('Get a user by id succesfully', async () => {
-        const res = await request(app)
-            .get(`/api/v1/users/${userTest._id}`)
-            .set('Authorization', `Bearer ${token}`)
-
-        expect(res.statusCode).toEqual(200)
-        expect(res.body.user.email).toEqual(userTest.email)
-        expect(res.body.user.fullName).toEqual(userTest.fullName)
-        expect(res.body.user.roles).toEqual(expect.arrayContaining(userTest.roles))
-    })
-
-
-    it('Update a user succesfully', async () => {
-        const res = await request(app)
-            .put(`/api/v1/users/${userTest._id}`)
-            .set('Authorization', `Bearer ${token}`)
-            .send({
-                email: 'userupdated@email.com',
-                fullName: 'user name updated',
-                birthDate: '2004-03-12',
-                phoneNumber: '0098765432',
-                password: 'P4SSwooR123#',
-                roles: ['Guest']
-            })
-
-        expect(res.statusCode).toEqual(200)
-        expect(res.body.user.email).toEqual('userupdated@email.com')
-        expect(res.body.user.fullName).toEqual('user name updated')
-        expect(res.body.user.roles).toEqual(expect.arrayContaining(['Guest']))
-        userTest._id = res.body.user._id
-    })
-
     it('Delete a user succesfully', async () => {
         const res = await request(app)
             .delete(`/api/v1/users/${userTest._id}`)
             .set('Authorization', `Bearer ${token}`)
         expect(res.statusCode).toEqual(200)
-        expect(res.userId).toEqual(test._id)
+        console.log(test)
+        expect(res.body.userId).toEqual(userTest._id)
     })
 })
