@@ -1,5 +1,5 @@
 const request = require('supertest')
-const app = require('../src/index')
+const app = require('../../src/index')
 const moongose = require('mongoose')
 
 describe('Auth API Endpoints', () => {
@@ -14,10 +14,10 @@ describe('Auth API Endpoints', () => {
     }
     let token;
 
-    // afterAll((done) => {
-    //     app.close(done)
-    //     moongose.disconnect();
-    // })
+    afterAll (async () => {
+        app.close()
+        moongose.disconnect();
+    })
 
     it('Signup with a new user succesfully', async () => {
         const res = await request(app)

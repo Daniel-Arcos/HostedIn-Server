@@ -153,6 +153,8 @@ const getAllOwnedAccommodations = async (id) => {
             select: '-password'
         });
 
+        console.log(allAccommodations)
+
         return allAccommodations;
     } catch (error) {
         throw {
@@ -197,6 +199,7 @@ const getOwnedBookedAccommodations = async (id) => {
                 }
             }
         ])    
+        console.log(accommodationsFound)
         return accommodationsFound
     } catch (error) {
         throw {
