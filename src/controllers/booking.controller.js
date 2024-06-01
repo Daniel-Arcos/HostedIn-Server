@@ -9,8 +9,8 @@ const ConsultorTypes = {
 
 const createBooking = async(req, res) =>{
     try {
-
         const errors = validationResult(req)
+
         if (!errors.isEmpty()) {
             throw { status : 400,
                 errors: errors.array(),
@@ -20,6 +20,7 @@ const createBooking = async(req, res) =>{
         const { beginningDate, endingDate, numberOfGuests, totalCost, bookingStatus} = req.body
         
         const currentDate = new Date()
+        currentDate.setHours(0, 0, 0, 0)
         if (beginningDate > endingDate) {
             throw{ status: 400, message:"La fecha de inicio es posterior a la de termino" }
         }

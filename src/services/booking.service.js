@@ -14,7 +14,7 @@ const saveBooking = async(booking) => {
             throw{ status: 400, message:"No puedes reservar tu propio alojamiento" }
         }
 
-        if(bookingFound){
+        if (bookingFound){
             throw{ status: 400, message:"Ya tienes una reservación para este alojamiento" }
         }        
 
