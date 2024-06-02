@@ -1,7 +1,17 @@
 const ReviewService = require('../services/review.service')
+const { validationResult } = require('express-validator')
 
 const saveNewReview = async (req, res) => {
     try {        
+
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({
+                errors: errors.array(),
+                message: "Uno de los campos falta, esta vacio o es erroneo en la peticion"
+            }); 
+        }
+
         const {accommodation, reviewDescription, rating, guestUser} = req.body
         const newReview = {
             accommodation,

@@ -1,4 +1,5 @@
 const Review = require('../models/Review');
+const ObjectIdValidator = require('../utils/ObjectIdValidator')
 
 const ID_MONGO_DB_SIZE = 24;
 
@@ -33,7 +34,8 @@ const saveNewReview= async (review) => {
 
 const getAllReviews = async (accommodationId) => {
     try {
-        if (typeof accommodationId !== 'string' || accommodationId.trim() === '' || accommodationId.length !== ID_MONGO_DB_SIZE) {
+        if (typeof accommodationId !== 'string' || accommodationId.trim() === '' || accommodationId.length !== ID_MONGO_DB_SIZE
+            || !ObjectIdValidator.isValidObjectId(accommodationId)) {
             throw {
                 status: 400,
                 message: "El ID proporcionado no es válido."
