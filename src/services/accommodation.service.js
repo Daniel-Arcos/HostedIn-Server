@@ -5,7 +5,8 @@ const BookingStatus = require('../models/BookingStatus')
 const Reviews = require('../models/Review')
 const Jwt = require('../security/Jwt');
 const Review = require('../models/Review');
-const Cancellation = require('../models/Cancellation') 
+const Cancellation = require('../models/Cancellation')
+const ObjectIdValidator = require('../utils/ObjectIdValidator')
 
 const getAccommodationsByLocationAndId = async (lat, long, id) => {
     try {
@@ -118,6 +119,21 @@ const getAllOwnedAccommodations = async (id) => {
             };
         }
 
+        if (!ObjectIdValidator.isValidObjectId(id)) {
+            throw {
+                status: 400,
+                message: "User ID is not valid"
+            };
+        }
+
+        const userAccommodation = await Accommodation.find({ 'user._id': id });
+        if (!userAccommodation) {
+            throw {
+                status: 404,
+                message: "Accommodations not found for userId"
+            };
+        }
+
         const allAccommodations = await Accommodation.aggregate([
             {
                 $match: {
@@ -165,6 +181,29 @@ const getAllOwnedAccommodations = async (id) => {
 }
 const getOwnedBookedAccommodations = async (id) => {
     try {
+
+        if (!id) {
+            throw {
+                status: 400,
+                message: "User ID is required"
+            };
+        }
+
+        if (!ObjectIdValidator.isValidObjectId(id)) {
+            throw {
+                status: 400,
+                message: "User ID is not valid"
+            };
+        }
+
+        const userAccommodation = await Accommodation.find({ 'user._id': id });
+        if (!userAccommodation) {
+            throw {
+                status: 404,
+                message: "Accommodations not found for userId"
+            };
+        }
+
         let accommodationsFound
         const objectId = new mongoose.Types.ObjectId(id);
         accommodationsFound = await Booking.aggregate([
@@ -199,7 +238,6 @@ const getOwnedBookedAccommodations = async (id) => {
                 }
             }
         ])    
-        console.log(accommodationsFound)
         return accommodationsFound
     } catch (error) {
         throw {

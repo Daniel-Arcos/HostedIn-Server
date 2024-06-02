@@ -4,13 +4,15 @@ const Jwt = require('../security/Jwt')
 const PasswordCodes = require('../models/PasswordCode')
 const RecoverPassUtils = require('../utils/RecoverPasswordUtils')
 const MailSender = require('../utils/MailSender')
+const ObjectIdValidator = require('../utils/ObjectIdValidator')
 
 const ID_MONGO_DB_SIZE = 24;
 
 const getUser = async (userId) => {
     try {
 
-        if (typeof userId !== 'string' || userId.trim() === '' || userId.length !== ID_MONGO_DB_SIZE) {
+        if (typeof userId !== 'string' || userId.trim() === '' || userId.length !== ID_MONGO_DB_SIZE
+            || !ObjectIdValidator.isValidObjectId(userId)) {
             throw {
                 status: 400,
                 message: "El ID proporcionado no es válido."
@@ -37,12 +39,34 @@ const getUser = async (userId) => {
 
 const editAccount = async (userId, userToEdit) => {
     try {
-        if (typeof userId !== 'string' || userId.trim() === '' || userId.length !== ID_MONGO_DB_SIZE) {
+        if (typeof userId !== 'string' || userId.trim() === '' || userId.length !== ID_MONGO_DB_SIZE
+            || !ObjectIdValidator.isValidObjectId(userId)) {
             throw {
                 status: 400,
                 message: "El ID proporcionado no es válido."
             };
         }
+
+        if (userToEdit.phoneNumber) {
+            const existingUser = await User.findOne({ phoneNumber: userToEdit.phoneNumber });
+            if (existingUser && existingUser._id.toString() !== userId) {
+                throw {
+                    status: 400,
+                    message: "El número de teléfono ya está registrado por otro usuario."
+                };
+            }
+        }
+
+        if (userToEdit.email) {
+            const existingUserWithEmail = await User.findOne({ email: userToEdit.email });
+            if (existingUserWithEmail && existingUserWithEmail._id.toString() !== userId) {
+                throw {
+                    status: 400,
+                    message: "El correo electrónico ya está registrado por otro usuario."
+                };
+            }
+        }
+
         if (userToEdit.password !== null && userToEdit.password && userToEdit.password.trim() !== ''){
             userToEdit.password = await User.encryptPassword(userToEdit.password)
         }
@@ -68,7 +92,8 @@ const editAccount = async (userId, userToEdit) => {
 const deleteAccount = async (userId) => {
     try {
 
-        if (typeof userId !== 'string' || userId.trim() === '' || userId.length !== ID_MONGO_DB_SIZE) {
+        if (typeof userId !== 'string' || userId.trim() === '' || userId.length !== ID_MONGO_DB_SIZE
+            || !ObjectIdValidator.isValidObjectId(userId)) {
             throw {
                 status: 400,
                 message: "El ID proporcionado no es válido."
@@ -128,7 +153,7 @@ const sendUserCode = async (email) => {
                 await sendEmail(email)
             }                    
         }
-    }catch(error){
+    } catch (error){
         throw {
             status: error?.status || 500,
             message: error.message

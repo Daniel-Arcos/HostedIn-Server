@@ -8,8 +8,8 @@ const AccommodationService = require('../services/accommodation.service')
 const getUserById = async (req, res) => {
     try {
         const userId = req.params.userId;
-        if (userId == null) {
-            return res.status(400).send({error: "El id del usuario 'userId' viene nulo"})
+        if (!userId || userId === null || userId === '') {
+            return res.status(400).send({error: "El id del usuario 'userId' viene nulo o vacío"})
         }
 
         const result = await UserService.getUser(userId);
@@ -49,7 +49,7 @@ const updateUserById = async (req, res) => {
 
         const userId = req.params.userId;
 
-        if (userId == null) {
+        if (userId === null) {
             return res.status(400).send({error: "El id del usuario viene nulo"})
         }
 
@@ -94,6 +94,8 @@ const updateUserById = async (req, res) => {
             }
         })
     } catch (error) {
+
+        console.log(error.message)
         return res.status(error?.status || 500)
             .send({
                 message: error?.message || error
@@ -123,7 +125,6 @@ const deleteUserById = async (req, res) => {
             })
     }
 }
-
 
 const sendUserEmail = async(req, res) => {
     try {
@@ -178,11 +179,9 @@ const updateUserPassword = async(req, res) => {
         }      
         jwt.verifyToken(authorization)  
         
-        
         const errors = validationResult(req)
         if (!errors.isEmpty()) {
             throw { status : 400,
-                
                 errors: errors.array(),
                 message: "Uno de los siguientes campos falta o esta vacio en la peticion: 'email', 'password'"
             }
@@ -206,6 +205,14 @@ const getHostAccommodationsByUserId = async (req, res) => {
         const userId= req.params.userId
         const {atLeastOneBooking} = req.query
         let accommodations
+
+        if (!userId) {
+            throw {
+                status: 400,
+                message: "UserID no válido"
+            }
+        }
+
         if(atLeastOneBooking){
             accommodations = await AccommodationService.getOwnedBookedAccommodations(userId)      
         }else{
