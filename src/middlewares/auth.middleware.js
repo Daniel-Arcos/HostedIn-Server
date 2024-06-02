@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const jwtSecret = process.env.JWT_SECRET;
 const ClaimTypes = require('../config/claimtypes');
-const {sign} = require('../security/Jwt'); // Ajusta la ruta según tu estructura de proyecto
+const {sign} = require('../security/Jwt');
 
 const Authorize = (requiredRoles) => {
     return async (req, res, next) => {
