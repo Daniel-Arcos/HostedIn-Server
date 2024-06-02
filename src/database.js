@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
-require('dotenv').config();
-
+const dotenv = require('dotenv')
 const user = process.env.USER_BD;
 const password = encodeURIComponent(process.env.PASSWORD_BD);
 const dbName = process.env.NAME_BD; 
