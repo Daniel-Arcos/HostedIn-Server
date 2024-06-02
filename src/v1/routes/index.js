@@ -15,5 +15,5 @@ router.use("/bookings", bookingRoutes)
 router.use("/roles", roleRoutes)
 router.use("/reviews",reviewRoutes)
 router.use("/cancellations", cancellationRoutes)
-
+router.use('*', (req, res) => { res.status(404).send()})
 module.exports = router

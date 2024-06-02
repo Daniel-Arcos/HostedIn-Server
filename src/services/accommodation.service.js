@@ -7,6 +7,7 @@ const Jwt = require('../security/Jwt');
 const Review = require('../models/Review');
 const Cancellation = require('../models/Cancellation')
 const ObjectIdValidator = require('../utils/ObjectIdValidator')
+const User = require('../models/User');
 
 const getAccommodationsByLocationAndId = async (lat, long, id) => {
     try {
@@ -112,6 +113,7 @@ const getAllAccommodations = async (id) => {
 }
 const getAllOwnedAccommodations = async (id) => {
     try {
+        
         if (!id) {
             throw {
                 status: 400,
@@ -132,6 +134,14 @@ const getAllOwnedAccommodations = async (id) => {
                 status: 404,
                 message: "Accommodations not found for userId"
             };
+        }
+        const userFound = await User.findById(id);
+
+        if (!userFound) {
+            throw {
+                status: 400,
+                message: "El usuario especificado no existe"
+            }
         }
 
         const allAccommodations = await Accommodation.aggregate([
@@ -251,6 +261,15 @@ const getOwnedBookedAccommodations = async (id) => {
 
 const createAccommodation = async (accommodation) => {
     try {
+
+        const userFound = await User.findById(accommodation.user);
+
+        if (!userFound) {
+            throw {
+                status: 400,
+                message: "El usuario especificado no existe"
+            }
+        }
 
         const accommodationFound = await Accommodation.findOne({ title: accommodation.title })
 

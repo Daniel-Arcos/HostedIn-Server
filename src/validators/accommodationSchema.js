@@ -91,6 +91,27 @@ const accommodationSchema = {
         },
         isObject: {
             errorMessage: 'Location must be an object'
+        },
+        custom: {
+            options: (value) => {
+                if (!value.latitude || !value.longitude) {
+                    return false;
+                }
+                return true;
+            },
+            errorMessage: 'Location must have a latitude and longitude'
+        }
+    },
+    'location.latitude': {
+        isFloat: {
+            options: { min: -90, max: 90 },
+            errorMessage: 'Latitude must be a number between -90 and 90'
+        }
+    },
+    'location.longitude': {
+        isFloat: {
+            options: { min: -180, max: 180 },
+            errorMessage: 'Longitude must be a number between -180 and 180'
         }
     },
     user: {
