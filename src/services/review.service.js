@@ -25,10 +25,13 @@ const saveNewReview= async (review) => {
             select: '-password' 
         });
     } catch (error) {
-        throw {
-            status: error?.status || 500,
-            message: error.message
+        if (error.status) {
+            throw {
+                status: error.status,
+                message: error.message
+            }
         }
+        throw error;
     }
 }
 
@@ -58,10 +61,13 @@ const getAllReviews = async (accommodationId) => {
         return reviews;
 
     } catch (error) {
-        throw {
-            status: error?.status || 500,
-            message: error.message
+        if (error.status) {
+            throw {
+                status: error.status,
+                message: error.message
+            }
         }
+        throw error;
     }
 }
 

@@ -1,6 +1,6 @@
 const RoleService = require('../services/role.service')
 
-const getAll = async () => {
+const getAll = async (req, res, next) => {
     try {
         let data = await RoleService.getAll()
         return res.status(200).send({
@@ -8,10 +8,12 @@ const getAll = async () => {
             roles: data
         })
     } catch (error) {
-        res.status(error?.status || 500)
-            .send({
-                message: error?.message || error
-            })
+        if (error.status) {
+            return res
+                .status(error.status)
+                .send({message: error.message});
+        }
+        next(error)
     }
 }
 

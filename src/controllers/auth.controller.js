@@ -3,7 +3,7 @@ const UserService = require('../services/auth.service')
 const { validationResult } = require('express-validator');
 const { leftTime } = require('../security/Jwt');
 
-const signUp = async (req, res) => {
+const signUp = async (req, res, next) => {
     try {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -27,14 +27,17 @@ const signUp = async (req, res) => {
             }
         })
     } catch (error) {
-        return res
-            .status(error?.status || 500)
-            .send({message: error?.message || error});
+        if (error.status) {
+            return res
+                .status(error.status)
+                .send({message: error.message});
+        }
+        next(error)
     }
 
 
 }
-const signIn = async (req, res) => {
+const signIn = async (req, res, next) => {
     try {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -58,13 +61,16 @@ const signIn = async (req, res) => {
             }
         })
     } catch (error) {
-        return res
-            .status(error?.status || 500)
-            .send({message: error?.message || error});
+        if (error.status) {
+            return res
+                .status(error.status)
+                .send({message: error.message});
+        }
+        next(error)
     }
 }
 
-const time = async (req, res) => {
+const time = async (req, res, next) => {
     const time = leftTime(req)
     if (time == null)
         return res.status(404).send()

@@ -1,0 +1,18 @@
+[2024-06-02T05:05:40.774Z] Error de conexion a la base de datos
+Error: Error de conexion a la base de datos
+    at Object.signIn (C:\workspace\SextoSemestre\DesarrolloAplicaciones\ProyectoFinalMobile\HostedIn-API-Rest\src\services\auth.service.js:51:15)
+    at signIn (C:\workspace\SextoSemestre\DesarrolloAplicaciones\ProyectoFinalMobile\HostedIn-API-Rest\src\controllers\auth.controller.js:51:36)
+    at Layer.handle [as handle_request] (C:\workspace\SextoSemestre\DesarrolloAplicaciones\ProyectoFinalMobile\HostedIn-API-Rest\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\workspace\SextoSemestre\DesarrolloAplicaciones\ProyectoFinalMobile\HostedIn-API-Rest\node_modules\express\lib\router\route.js:149:13)
+    at middleware (C:\workspace\SextoSemestre\DesarrolloAplicaciones\ProyectoFinalMobile\HostedIn-API-Rest\node_modules\express-validator\src\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+
+[2024-06-02T05:06:07.211Z] Error de conexion a la base de datos
+Error: Error de conexion a la base de datos
+    at Object.signIn (C:\workspace\SextoSemestre\DesarrolloAplicaciones\ProyectoFinalMobile\HostedIn-API-Rest\src\services\auth.service.js:51:15)
+    at signIn (C:\workspace\SextoSemestre\DesarrolloAplicaciones\ProyectoFinalMobile\HostedIn-API-Rest\src\controllers\auth.controller.js:51:36)
+    at Layer.handle [as handle_request] (C:\workspace\SextoSemestre\DesarrolloAplicaciones\ProyectoFinalMobile\HostedIn-API-Rest\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\workspace\SextoSemestre\DesarrolloAplicaciones\ProyectoFinalMobile\HostedIn-API-Rest\node_modules\express\lib\router\route.js:149:13)
+    at middleware (C:\workspace\SextoSemestre\DesarrolloAplicaciones\ProyectoFinalMobile\HostedIn-API-Rest\node_modules\express-validator\src\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+

@@ -1,7 +1,7 @@
 const ReviewService = require('../services/review.service')
 const { validationResult } = require('express-validator')
 
-const saveNewReview = async (req, res) => {
+const saveNewReview = async (req, res, next) => {
     try {        
 
         const errors = validationResult(req);
@@ -25,13 +25,16 @@ const saveNewReview = async (req, res) => {
             review: savedReview
         })
     } catch (error) {
-        return res
-            .status(error?.status || 500)
-            .send({message: error?.message || error});
+        if (error.status) {
+            return res
+                .status(error.status)
+                .send({message: error.message});
+        }
+        next(error)
     }
 }
 
-const getReviewByAccommodationId = async (req, res) => {
+const getReviewByAccommodationId = async (req, res, next) => {
     try {
         const accommodationId = req.params.accommodationId;
 
@@ -46,9 +49,12 @@ const getReviewByAccommodationId = async (req, res) => {
             reviews : result})
 
     } catch (error) {
-        return res
-            .status(error?.status || 500)
-            .send({message: error?.message || error}); 
+        if (error.status) {
+            return res
+                .status(error.status)
+                .send({message: error.message});
+        }
+        next(error)
     }
 }
 

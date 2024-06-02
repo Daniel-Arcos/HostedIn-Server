@@ -1,14 +1,14 @@
 const CancellationService = require('../services/cancellation.service')
 const { validationResult } = require('express-validator')
 
-const createCancellation = async(req, res) => {
+const createCancellation = async(req, res, next) => {
     try {
         const errors = validationResult(req)
         if (!errors.isEmpty()) {
-            throw { status : 400,
+            return res.status(400).json({
                 errors: errors.array(),
                 message: "Hay un error en la peticion"
-            }
+            })
         }
 
         const { cancellationDate, reason, cancellator, booking } = req.body
@@ -24,9 +24,12 @@ const createCancellation = async(req, res) => {
             cancellation: createdCancellation
         })
     } catch (error) {
-        return res
-            .status(error?.status || 500)
-            .send({message: error?.message || error});
+        if (error.status) {
+            return res
+                .status(error.status)
+                .send({message: error.message});
+        }
+        next(error)
     }
 }
 

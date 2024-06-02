@@ -5,7 +5,7 @@ const { validationResult } = require('express-validator')
 const Accommodation = require('../models/Accommodation')
 const AccommodationService = require('../services/accommodation.service')
 
-const getUserById = async (req, res) => {
+const getUserById = async (req, res, next) => {
     try {
         const userId = req.params.userId;
         if (!userId || userId === null || userId === '') {
@@ -29,14 +29,16 @@ const getUserById = async (req, res) => {
             }
         })
     } catch (error) {
-        return res.status(error?.status || 500)
-            .send({
-                message: error?.message || error
-            })
+        if (error.status) {
+            return res
+                .status(error.status)
+                .send({message: error.message});
+        }
+        next(error)
     }
 }
 
-const updateUserById = async (req, res) => {
+const updateUserById = async (req, res, next) => {
     try {
 
         const errors = validationResult(req);
@@ -94,16 +96,16 @@ const updateUserById = async (req, res) => {
             }
         })
     } catch (error) {
-
-        console.log(error.message)
-        return res.status(error?.status || 500)
-            .send({
-                message: error?.message || error
-            })
+        if (error.status) {
+            return res
+                .status(error.status)
+                .send({message: error.message});
+        }
+        next(error)
     }
 }
 
-const deleteUserById = async (req, res) => {
+const deleteUserById = async (req, res, next) => {
     try {
         const userId = req.params.userId;
 
@@ -119,14 +121,16 @@ const deleteUserById = async (req, res) => {
         })
 
     } catch (error) {
-        return res.status(error?.status || 500)
-            .send({
-                message: error?.message || error
-            })
+        if (error.status) {
+            return res
+                .status(error.status)
+                .send({message: error.message});
+        }
+        next(error)
     }
 }
 
-const sendUserEmail = async(req, res) => {
+const sendUserEmail = async(req, res, next) => {
     try {
         const {content} = req.body
         if (!content) {
@@ -141,13 +145,16 @@ const sendUserEmail = async(req, res) => {
             message:"Codigo enviado exitosamente"
         })
     } catch (error) {
-        return res
-            .status(error?.status || 500)
-            .send({message: error?.message || error});
+        if (error.status) {
+            return res
+                .status(error.status)
+                .send({message: error.message});
+        }
+        next(error)
     }
 }
 
-const userCodeVerification = async(req, res) => {
+const userCodeVerification = async(req, res, next) => {
     try {
         const { content } = req.body
         if(!content) {
@@ -164,13 +171,16 @@ const userCodeVerification = async(req, res) => {
         })      
     }
     catch (error) {
-        return res
-            .status(error?.status || 500)
-            .send({message: error?.message || error});
+        if (error.status) {
+            return res
+                .status(error.status)
+                .send({message: error.message});
+        }
+        next(error)
     }
 }
 
-const updateUserPassword = async(req, res) => {
+const updateUserPassword = async(req, res, next) => {
     try {
 
         const authorization = req.headers.authorization;  
@@ -194,13 +204,16 @@ const updateUserPassword = async(req, res) => {
             message:"Contaseña actualizada correctamente"
         })        
     } catch (error) {
-        return res
-            .status(error?.status || 500)
-            .send({message: error?.message || error});
+        if (error.status) {
+            return res
+                .status(error.status)
+                .send({message: error.message});
+        }
+        next(error)
     }
 }
 
-const getHostAccommodationsByUserId = async (req, res) => {
+const getHostAccommodationsByUserId = async (req, res, next) => {
     try {
         const userId= req.params.userId
         const {atLeastOneBooking} = req.query
@@ -223,9 +236,12 @@ const getHostAccommodationsByUserId = async (req, res) => {
             message:"Alojamientos recuperados exitosamente",
             accommodations})
     } catch (error) {
-        return res
-            .status(error?.status || 500)
-            .send({message: error?.message || error});
+        if (error.status) {
+            return res
+                .status(error.status)
+                .send({message: error.message});
+        }
+        next(error)
     }   
 }
 

@@ -7,15 +7,15 @@ const ConsultorTypes = {
     GUEST: "Guest"
 }
 
-const createBooking = async(req, res) =>{
+const createBooking = async(req, res, next) =>{
     try {
         const errors = validationResult(req)
 
         if (!errors.isEmpty()) {
-            throw { status : 400,
+            return res.status(400).json({
                 errors: errors.array(),
                 message: "Uno de los siguientes campos falta o esta vacio en la peticion: accommodation, beginningDate, endingDate, numberOfGuests, totalCost, bookingStatus, guestUserId"
-            }
+            })
         }
         const { beginningDate, endingDate, numberOfGuests, totalCost, bookingStatus} = req.body
         
@@ -47,14 +47,50 @@ const createBooking = async(req, res) =>{
             booking: result
         })
     } catch (error) {
-        return res
-            .status(error?.status || 500)
-            .send({message: error?.message || error});
+        if (error.status) {
+            return res
+                .status(error.status)
+                .send({message: error.message});
+        }
+        next(error)
     }
 } 
 
+const editBooking = async(req, res, next) => {
+    try {
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) {
+            return res.status(400).json({
+                errors: errors.array(),
+                message: "Uno de los siguientes campos falta o esta vacio en la peticion: accommodationId, beginningDate, endingDate, numberOfGuests, totalCost, bookingStatus, guestUserId"
+            })
+        }
+        const bookingId = req.params.bookingId
+        const {accommodation, beginningDate, endingDate, numberOfGuests, totalCost, bookingStatus, guestUserId} = req.body
+        const beginDate =  new Date(beginningDate)
+        const endDate = new Date(endingDate)
+        const currentDate = new Date()
+        if (beginDate > endDate) {
+            throw{ status: 400, message:"La fecha de inicio es psoterior a la de termino" }
+        }
+        if(beginDate < currentDate){
+            throw{ status: 400, message:"La fecha de inicio es previa a la fecha actual" }
+        } 
+        await BookingService.updateBooking(bookingId, accommodation, beginningDate, endingDate, numberOfGuests, totalCost, BookingStatus.CURRENT, guestUserId)
+        res.status(200).send({
+            message: "Reservacion actualizada exitosamente"
+        })
+    } catch (error) {
+        if (error.status) {
+            return res
+                .status(error.status)
+                .send({message: error.message});
+        }
+        next(error)
+    }
+}
 
-const getBookingById = async(req, res) => {
+const getBookingById = async(req, res, next) => {
     try {
         const bookingId = req.params.bookingId
         if (bookingId === null) {
@@ -66,13 +102,16 @@ const getBookingById = async(req, res) => {
             booking: result
         })
     } catch (error) {
-        return res
-            .status(error?.status || 500)
-            .send({message: error?.message || error});
+        if (error.status) {
+            return res
+                .status(error.status)
+                .send({message: error.message});
+        }
+        next(error)
     }
 }
 
-const getBookingByAccommodationId = async(req, res) => {
+const getBookingByAccommodationId = async(req, res, next) => {
     try {
         const accommodationId = req.params.accommodationId
         if (accommodationId === null) {
@@ -95,9 +134,12 @@ const getBookingByAccommodationId = async(req, res) => {
             bookings: result          
         })
     } catch (error) {
-        return res
-            .status(error?.status || 500)
-            .send({message: error?.message || error});
+        if (error.status) {
+            return res
+                .status(error.status)
+                .send({message: error.message});
+        }
+        next(error)
     }
 }
 
@@ -111,9 +153,27 @@ function filterBookingsByStatus(status, bookings){
     return filteredBookings
 }
 
+const deleteBookingById = async(req, res, next) => {
+    try {        
+        const bookingId = req.params.bookingId
+        if (bookingId === null) {
+            return res.status(400).send({error: "El viene nulo"})
+        }
+        await BookingService.deleteBooking(bookingId)
+        return res.status(200).send({
+            message: "Reservacion eliminada exitosamente",         
+        })
+    } catch (error) {
+        if (error.status) {
+            return res
+                .status(error.status)
+                .send({message: error.message});
+        }
+        next(error)
+    }
+}
 
-
-const getGuestBookings = async (req, res) => {
+const getGuestBookings = async (req, res, next) => {
     try {
         const userId= req.params.userId
         const {status} = req.query
@@ -128,9 +188,12 @@ const getGuestBookings = async (req, res) => {
             message:"Reservaciones recuperadas exitosamente",
             bookings})
     } catch (error) {
-        return res
-            .status(error?.status || 500)
-            .send({message: error?.message || error});
+        if (error.status) {
+            return res
+                .status(error.status)
+                .send({message: error.message});
+        }
+        next(error)
     }   
 }
 
