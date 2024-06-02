@@ -102,7 +102,7 @@ const updateAccommodation = async (req, res) => {
             },
             user: req.body.user._id
         };
-
+        console.log(accommodationUpdated)
         result = await AccommodationService.updateAccommodation(accommodationUpdated)
 
         res.status(201).send({
@@ -110,6 +110,7 @@ const updateAccommodation = async (req, res) => {
             accommodation: result
         })
     } catch (error) {
+        console.log(error)
         return res
             .status(error?.status || 500)
             .send({message: error?.message || error});
