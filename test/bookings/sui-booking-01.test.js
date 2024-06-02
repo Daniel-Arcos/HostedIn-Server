@@ -9,7 +9,7 @@ describe('Booking API Endpoints', () => {
         _id: '',
         email: 'userHostBTest@gmail.com',
         fullName: 'User Booking Test',
-        birthDate: '2000-12-10',
+        birthDate: '2003-03-05T06:00:00.000+00:00',
         phoneNumber: '1234567891',
         password: 'Qwertyui1=',
         roles: ['Host']
@@ -18,7 +18,7 @@ describe('Booking API Endpoints', () => {
         _id: '',
         email: 'userGuestBTest@gmail.com',
         fullName: 'User Booking Test',
-        birthDate: '2000-12-10',
+        birthDate: '2003-03-05T06:00:00.000+00:00',
         phoneNumber: '1234567891',
         password: 'Qwertyui1=',
         roles: ['Guest']
@@ -27,7 +27,7 @@ describe('Booking API Endpoints', () => {
         _id: '',
         email: 'userGuestBTest2@gmail.com',
         fullName: 'User Booking Test',
-        birthDate: '2000-12-10',
+        birthDate: '2003-03-05T06:00:00.000+00:00',
         phoneNumber: '1234567891',
         password: 'Qwertyui1=',
         roles: ['Guest']
@@ -35,6 +35,11 @@ describe('Booking API Endpoints', () => {
     let tokenHost
     let tokenGuest
     let tokenGuest2
+
+    afterAll(async () => {
+        await moongose.disconnect();
+        app.close();
+    });
 
     //Registro de usuarios y alojamiento.
     it('Registrar usuario Host', async () => {
@@ -68,6 +73,7 @@ describe('Booking API Endpoints', () => {
             })
 
         expect(res.statusCode).toEqual(201)
+        console.log(res.message)
         userGuestTest._id = res.body.user._id
         let tokenBearer = res.headers.authorization
         tokenGuest = tokenBearer.replace("Bearer ", "")
@@ -99,7 +105,6 @@ describe('Booking API Endpoints', () => {
             )
             .set('Authorization', `Bearer ${tokenHost}`)
 
-        console.log(res.body.message)
         expect(res.statusCode).toEqual(201)
         expect(res.body.accommodation.title).toEqual(accommodation.title)
         expect(res.body.accommodation.description).toEqual(accommodation.description)
