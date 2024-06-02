@@ -30,10 +30,13 @@ const getUser = async (userId) => {
         return userFound
 
     } catch (error) {
-        throw {
-            status: error?.status || 500,
-            message: error.message
+        if (error.status) {
+            throw {
+                status: error.status,
+                message: error.message
+            }
         }
+        throw error;
     }
 }
 
@@ -82,10 +85,13 @@ const editAccount = async (userId, userToEdit) => {
         }
         return userFound
     } catch (error) {
-        throw {
-            status: error?.status || 500,
-            message: error.message
+        if (error.status) {
+            throw {
+                status: error.status,
+                message: error.message
+            }
         }
+        throw error;
     }
 }
 
@@ -120,10 +126,13 @@ const deleteAccount = async (userId) => {
 
         return deletedUser;
     } catch (error) {
-        throw {
-            status: error?.status || 500,
-            message: error.message
+        if (error.status) {
+            throw {
+                status: error.status,
+                message: error.message
+            }
         }
+        throw error;
     }
 }
 
@@ -154,10 +163,13 @@ const sendUserCode = async (email) => {
             }                    
         }
     } catch (error){
-        throw {
-            status: error?.status || 500,
-            message: error.message
+        if (error.status) {
+            throw {
+                status: error.status,
+                message: error.message
+            }
         }
+        throw error;
     }
 }
 
@@ -189,10 +201,13 @@ async function sendEmail(email, codeRegistry){
         }
     } 
     } catch (error) {
-        throw {
-            status: error?.status || 500,
-            message: error.message
+        if (error.status) {
+            throw {
+                status: error.status,
+                message: error.message
+            }
         }
+        throw error;
     }
     
 }
@@ -219,10 +234,13 @@ const verifyUserCode = async (code) => {
             }
         }
     } catch (error) {
-        throw {
-            status: error?.status || 500,
-            message: error.message
+        if (error.status) {
+            throw {
+                status: error.status,
+                message: error.message
+            }
         }
+        throw error;
     }
 }
 
@@ -241,10 +259,13 @@ const updateUserPassword = async (newPassword, email) => {
             }
         }
     } catch (error) {
-        throw {
-            status: error?.status || 500,
-            message: error.message
+        if (error.status) {
+            throw {
+                status: error.status,
+                message: error.message
+            }
         }
+        throw error;
     }
 }
 

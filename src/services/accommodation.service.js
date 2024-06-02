@@ -59,10 +59,13 @@ const getAccommodationsByLocationAndId = async (lat, long, id) => {
 
         return filteredAccommodations;
     } catch (error) {
-        throw {
-            status: error?.status || 500,
-            message: error.message
+        if (error.status) {
+            throw {
+                status: error.status,
+                message: error.message
+            }
         }
+        throw error;
     }
 }
 
@@ -93,7 +96,7 @@ const getAllAccommodations = async (id) => {
                 $project: {
                     multimedias: 0,
                     "user.password": 0,
-                    reviews: 0 // Optionally exclude the reviews array
+                    reviews: 0 
                 }
             }
         ]);
@@ -105,10 +108,13 @@ const getAllAccommodations = async (id) => {
 
         return allAccommodations;
     } catch (error) {
-        throw {
-            status: error?.status || 500,
-            message: error.message
+        if (error.status) {
+            throw {
+                status: error.status,
+                message: error.message
+            }
         }
+        throw error;
     }
 }
 const getAllOwnedAccommodations = async (id) => {
@@ -183,10 +189,13 @@ const getAllOwnedAccommodations = async (id) => {
 
         return allAccommodations;
     } catch (error) {
-        throw {
-            status: error?.status || 500,
-            message: error.message
+        if (error.status) {
+            throw {
+                status: error.status,
+                message: error.message
+            }
         }
+        throw error;
     }
 }
 const getOwnedBookedAccommodations = async (id) => {
@@ -250,10 +259,13 @@ const getOwnedBookedAccommodations = async (id) => {
         ])    
         return accommodationsFound
     } catch (error) {
-        throw {
-            status: error?.status || 500,
-            message: error.message
+        if (error.status) {
+            throw {
+                status: error.status,
+                message: error.message
+            }
         }
+        throw error;
     }
 }
 
@@ -291,10 +303,13 @@ const createAccommodation = async (accommodation) => {
         return foundAccommodation
 
     } catch (error) {
-        throw {
-            status: error?.status || 500,
-            message: error.message
+        if (error.status) {
+            throw {
+                status: error.status,
+                message: error.message
+            }
         }
+        throw error;
     }
 }
 
@@ -327,10 +342,13 @@ const updateAccommodation = async (accommodation) => {
         return foundAccommodation
 
     } catch (error) {
-        throw {
-            status: error?.status || 500,
-            message: error.message
+        if (error.status) {
+            throw {
+                status: error.status,
+                message: error.message
+            }
         }
+        throw error;
     }
 }
 
@@ -360,10 +378,13 @@ const deleteAccommodation = async (accommodationId) =>{
 
         return "Alojamiento y recursos relacionado borrados exitosamente"
     } catch (error) {
-        throw {
-            status: error?.status || 500,
-            message: error.message
+        if (error.status) {
+            throw {
+                status: error.status,
+                message: error.message
+            }
         }
+        throw error;
     }
 }
 

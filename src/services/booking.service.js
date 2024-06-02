@@ -54,10 +54,13 @@ const saveBooking = async(booking) => {
 
         return foundBooking 
     } catch (error) {
-        throw {
-            status: error?.status || 500,
-            message: error.message
+        if (error.status) {
+            throw {
+                status: error.status,
+                message: error.message
+            }
         }
+        throw error;
     }
 }
 
@@ -76,10 +79,13 @@ const getBooking = async(bookingId) => {
         }
         return foundBooking
     } catch (error) {
-        throw {
-            status: error?.status || 500,
-            message: error.message
+        if (error.status) {
+            throw {
+                status: error.status,
+                message: error.message
+            }
         }
+        throw error;
     }
 }
 
@@ -105,10 +111,13 @@ const getAllBookingsByAccommodation = async (accommodationId)=> {
         }
         return foundBookings
     } catch (error) {
-        throw {
-            status: error?.status || 500,
-            message: error.message
+        if (error.status) {
+            throw {
+                status: error.status,
+                message: error.message
+            }
         }
+        throw error;
     }
 }
 
@@ -127,10 +136,13 @@ const getCurrentGuestBookings = async (id) => {
         }) 
         return accommodationsFound
     } catch (error) {
-        throw {
-            status: error?.status || 500,
-            message: error.message
+        if (error.status) {
+            throw {
+                status: error.status,
+                message: error.message
+            }
         }
+        throw error;
     }
 }
 
@@ -149,10 +161,13 @@ const getOverdueGuestBookings = async (id) => {
         }) 
         return accommodationsFound
     } catch (error) {
-        throw {
-            status: error?.status || 500,
-            message: error.message
+        if (error.status) {
+            throw {
+                status: error.status,
+                message: error.message
+            }
         }
+        throw error;
     }
 }
 

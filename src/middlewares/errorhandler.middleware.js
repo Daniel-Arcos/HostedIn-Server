@@ -3,7 +3,7 @@ const errorHandler = (err, req, res, next) => {
     if (process.env.NODE_ENV === 'development') {
         const statusCode = err.statusCode || 400
         mensaje = err.message || mensaje
-        return res.statusCode(statusCode).json({
+        return res.status(statusCode).json({
             success: false,
             status: err.statusCode,
             mensaje: mensaje,

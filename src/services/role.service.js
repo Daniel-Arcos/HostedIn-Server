@@ -4,10 +4,13 @@ const getAll = async () => {
     try {
         return Role.find()
     } catch (error) {
-        throw {
-            status: error?.status || 500,
-            message: error.message
+        if (error.status) {
+            throw {
+                status: error.status,
+                message: error.message
+            }
         }
+        throw error;
     }
 }
 

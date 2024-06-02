@@ -36,10 +36,13 @@ const createAccount = async (email, fullName, birthDate, phoneNumber, password, 
             return [user, token]
         }
     } catch (error) {
-        throw {
-            status: error?.status || 500,
-            message: error.message
+        if (error.status) {
+            throw {
+                status: error.status,
+                message: error.message
+            }
         }
+        throw error;
     }
 }
 
@@ -68,10 +71,13 @@ const signIn = async (email, password) => {
         const token = Jwt.sign(userFound.email, userFound.fullName, userFound.roles.map(role => role.name))
         return [userFound, token]
     } catch (error) {
-        throw {
-            status: error?.status || 500,
-            message: error.message
+        if (error.status) {
+            throw {
+                status: error.status,
+                message: error.message
+            }
         }
+        throw error;
     }
 }
 

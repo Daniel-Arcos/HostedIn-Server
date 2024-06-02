@@ -1,7 +1,7 @@
 const AccommodationService = require('../services/accommodation.service')
 const { validationResult } = require('express-validator')
 
-const getAccommodations = async (req, res) => {
+const getAccommodations = async (req, res, next) => {
     try {
         const { lat, long, id } = req.query;
         let result
@@ -18,13 +18,16 @@ const getAccommodations = async (req, res) => {
             message: "Alojamientos recuperados con exito",
             accommodations: result})
     } catch (error) {
-        return res
-        .status(error?.status || 500)
-        .send({message: error?.message || error});
+        if (error.status) {
+            return res
+                .status(error.status)
+                .send({message: error.message});
+        }
+        next(error)
     }
 }
 
-const createAccommodation = async (req, res) => {
+const createAccommodation = async (req, res, next) => {
     try {
 
         const errors = validationResult(req);
@@ -63,13 +66,16 @@ const createAccommodation = async (req, res) => {
             accommodation: result
         })
     } catch (error) {
-        return res
-            .status(error?.status || 500)
-            .send({message: error?.message || error});
+        if (error.status) {
+            return res
+                .status(error.status)
+                .send({message: error.message});
+        }
+        next(error)
     }
 }
 
-const updateAccommodation = async (req, res) => {
+const updateAccommodation = async (req, res, next) => {
     try {
 
         const _id = req.params.accommodationId
@@ -110,14 +116,17 @@ const updateAccommodation = async (req, res) => {
             accommodation: result
         })
     } catch (error) {
-        return res
-            .status(error?.status || 500)
-            .send({message: error?.message || error});
+        if (error.status) {
+            return res
+                .status(error.status)
+                .send({message: error.message});
+        }
+        next(error)
     }
 }
 
 
-const deleteAccommodation = async (req, res) => {
+const deleteAccommodation = async (req, res, next) => {
     try {
 
         const _id = req.params.accommodationId       
@@ -128,9 +137,12 @@ const deleteAccommodation = async (req, res) => {
         })
 
     } catch (error) {
-        return res
-            .status(error?.status || 500)
-            .send({message: error?.message || error});
+        if (error.status) {
+            return res
+                .status(error.status)
+                .send({message: error.message});
+        }
+        next(error)
     }
 }
 
