@@ -2,7 +2,7 @@ const request = require('supertest')
 const app = require('../../src/index')
 const moongose = require('mongoose')
 
-describe('Booking API Endpoints', () => {
+describe('Cancellation  Endpoints: Create Cancellation', () => {
 
     //DATOS DE PRUEBA:
     let userHostTest = {
@@ -19,16 +19,16 @@ describe('Booking API Endpoints', () => {
         email: 'userGuestCTest@gmail.com',
         fullName: 'User Booking Test',
         birthDate: '2000-12-10',
-        phoneNumber: '1234567891',
+        phoneNumber: '1234567801',
         password: 'Qwertyui1=',
         roles: ['Guest']
     }
     let userGuestTest2 = {
         _id: '',
         email: 'userGuestCTest2@gmail.com',
-        fullName: 'User Booking Test',
+        fullName: 'User Booking Test TWO',
         birthDate: '2000-12-10',
-        phoneNumber: '1234567891',
+        phoneNumber: '1234567811',
         password: 'Qwertyui1=',
         roles: ['Guest']
     }
@@ -37,7 +37,7 @@ describe('Booking API Endpoints', () => {
     let tokenGuest2
 
     //Registro de usuarios y alojamiento.
-    it('Registrar usuario Host', async () => {
+    it('Registry Host', async () => {
         const res = await request(app)
             .post('/api/v1/auth/signup')
             .send({
@@ -55,7 +55,7 @@ describe('Booking API Endpoints', () => {
         tokenHost = tokenBearer.replace("Bearer ", "")
     })
 
-    it('Registrar usuario Guest', async () => {
+    it('Registy Guest', async () => {
         const res = await request(app)
             .post('/api/v1/auth/signup')
             .send({
@@ -73,7 +73,7 @@ describe('Booking API Endpoints', () => {
         tokenGuest = tokenBearer.replace("Bearer ", "")
     })
 
-    it('Registrar usuario Guest2', async () => {
+    it('Registy Guest2', async () => {
         const res = await request(app)
             .post('/api/v1/auth/signup')
             .send({
@@ -132,7 +132,7 @@ describe('Booking API Endpoints', () => {
         }
       }
 
-    it('Registrar alojamiento prueba 1', async () => {
+    it('Registry accommo 1', async () => {
         const res = await request(app)
             .post('/api/v1/accommodations')
             .send(
@@ -147,7 +147,7 @@ describe('Booking API Endpoints', () => {
         accommodation._id = res.body.accommodation._id
     })
 
-    it('Registrar alojamiento prueba 2', async () => {
+    it('Registry accommo 2', async () => {
         const res = await request(app)
             .post('/api/v1/accommodations')
             .send(
@@ -162,35 +162,35 @@ describe('Booking API Endpoints', () => {
         accommodation2._id = res.body.accommodation._id
     })
     
-    
+    //DATOS DE LOS BOOKING
 
     let bookingTest1 = {
         _id: '',
         accommodation: accommodation,
-        beginningDate: '2024-06-26T00:00:00.000+00:00',
-        endidngDate: '2024-06-27T00:00:00.000+00:00',
-        numberOfGuest: 1,
+        beginningDate: '2024-12-10',
+        endingDate: '2024-12-11',
+        numberOfGuests: 1,
         totalCost: 200,
         bookingStatus: 'Current',
-        guesUser: userGuestTest,
+        guestUser: userGuestTest,
         hostUser: userHostTest
     }
 
-    let bookingTest2 = {
+    let bookingInvalid = {
         _id: '',
         accommodation: accommodation,
-        beginningDate: '2024-07-26T00:00:00.000+00:00',
-        endidngDate: '2024-07-27T00:00:00.000+00:00',
-        numberOfGuest: 1,
+        beginningDate: '2024-12-10',
+        endingDate: '2024-12-11',
+        numberOfGuests: 1,
         totalCost: 200,
         bookingStatus: 'Current',
-        guesUser: userGuestTest2,
+        guestUser: userGuestTest,
         hostUser: userHostTest
     }
 
 
     //Registrar Bookings
-    it('Crear Booking 1', async () => {
+    it('Registry booking 1', async () => {
         const res = await request(app)
             .post('/api/v1/bookings').send(
                 bookingTest1
@@ -200,98 +200,102 @@ describe('Booking API Endpoints', () => {
         bookingTest1._id = res.body.booking._id
     })
 
-    it('Crear Booking 2', async () => {
+
+    let cancellationTest ={
+        cancellationDate: '2024-06-2',
+        reason: "I'm gonna use it",
+        cancellator: userGuestTest,
+        booking: bookingTest1
+    }
+
+
+    //CASOS DE PRUEBAS
+    //POST: 
+    it('POST: Create  guest cancellation succ', async () => {
         const res = await request(app)
-            .post('/api/v1/bookings').send(
-                bookingTest2
-            ).set('Authorization', `Bearer ${tokenGuest2}`)
+            .post(`/api/v1/cancellations`).send( 
+                cancellationTest               
+            ).set('Authorization', `Bearer ${tokenGuest}`)
         console.log(res.body.message)
         expect(res.statusCode).toEqual(201)
-        bookingTest2._id = res.body.booking._id
     })
-
-
-    //GET reservaciones de alojamientos.
-    it('Peticion Get Bookings de alojamiento Host', async () => {
+  
+    //Registrar Bookings
+    it('Registry booking 2', async () => {
         const res = await request(app)
-            .get(`/api/v1/accommodations/${accommodation._id}/bookings`).send(                
-            ).set('Authorization', `Bearer ${tokenHost}`)
-        console.log(res.body.message)
-        expect(res.statusCode).toEqual(200)
-    })
-
-    //GET reservaciones de alojamientos  Vigentes.
-    it('Peticion Get Bookings de alojamiento Host', async () => {
-        const res = await request(app)
-            .get(`/api/v1/accommodations/${accommodation._id}/bookings?bookingStatus=Current`).send(                
-            ).set('Authorization', `Bearer ${tokenHost}`)
-        console.log(res.body.message)
-        expect(res.statusCode).toEqual(200)
-    })
-
-    //GET reservaciones de alojamientos  Vencido y cancelados.
-    it('Peticion Get Bookings de alojamiento Host', async () => {
-        const res = await request(app)
-            .get(`/api/v1/accommodations/${accommodation._id}/bookings?bookingStatus=Overdue`).send(                
-            ).set('Authorization', `Bearer ${tokenHost}`)
-        console.log(res.body.message)
-        expect(res.statusCode).toEqual(200)
-    })
-
-
-    //GET reservaciones de alojamiento inexistente
-    it('Petiicion Get Bookings de alojamiento Host', async () => {
-        const res = await request(app)
-            .get(`/api/v1/accommodations/00a0a0a0a000a000a0a000a0`).send(                
-            ).set('Authorization', `Bearer ${tokenHost}`)
-        console.log(res.body.message)
-        expect(res.statusCode).toEqual(400)
-    })
-
-
-    //GET reservaciones de alojamiento sin reservaciones
-    it('Petiicion Get Bookings de alojamiento Host', async () => {
-        const res = await request(app)
-            .get(`/api/v1/accommodations/${accommodation2._id}`).send(                
-            ).set('Authorization', `Bearer ${tokenHost}`)
-        console.log(res.body.message)
-        expect(res.statusCode).toEqual(400)
-    })
-
-    //GET reservaciones vigentes de un guest
-    it('Petiicion Get Bookings vigentes de Guest', async () => {
-        const res = await request(app)
-            .get(`/api/v1/users/${userGuestTest._id}/bookings?status=Current`).send(                
+            .post('/api/v1/bookings').send(
+                bookingTest1
             ).set('Authorization', `Bearer ${tokenGuest}`)
         console.log(res.body.message)
-        expect(res.statusCode).toEqual(200)
+        expect(res.statusCode).toEqual(201)
+        bookingTest1._id = res.body.booking._id
     })
 
-    //GET reservaciones antiguas de un guest
-    it('Petiicion Get Bookings antiguas de Guest', async () => {
+
+    // TEST CASES
+    //POST: 
+    it('POST: Create host cancellation succ', async () => {
+        const cancellation ={
+            ...cancellationTest,
+            cancellator: userHostTest 
+        }
         const res = await request(app)
-            .get(`/api/v1/users/${userGuestTest._id}/bookings?status=Overdue`).send(                
-            ).set('Authorization', `Bearer ${tokenGuest}`)
+            .post(`/api/v1/cancellations`).send( 
+                cancellation                          
+            ).set('Authorization', `Bearer ${tokenHost}`)
         console.log(res.body.message)
-        expect(res.statusCode).toEqual(200)
+        expect(res.statusCode).toEqual(201)
     })
 
-
-    //GET reservaciones de guest con un host
-    it('Petiicion Get Bookings con Host', async () => {
+     //POST: 
+     it('POST: Create cancellation with empty fields', async () => {
+        const cancellation ={
+            ...cancellationTest,
+            cancellator: "",
+            reason: "" 
+        }
         const res = await request(app)
-            .get(`/api/v1/users/${userGuestTest._id}/bookings?status=Overdue`).send(                
+            .post(`/api/v1/cancellations`).send( 
+                cancellation                          
             ).set('Authorization', `Bearer ${tokenHost}`)
         console.log(res.body.message)
         expect(res.statusCode).toEqual(400)
     })
 
-    //
+    //POST: 
+    it('POST: Create cancellation without Authorization', async () => {
+               const res = await request(app)
+            .post(`/api/v1/cancellations`).send( 
+                cancellationTest                          
+            ).set('Authorization', `Bearer ${""}`)
+        console.log(res.body.message)
+        expect(res.statusCode).toEqual(401)
+    })
 
+     //POST: 
+     it('POST: Create cancellation of already cancelled booking', async () => {
+        const res = await request(app)
+            .post(`/api/v1/cancellations`).send( 
+                cancellationTest                          
+            ).set('Authorization', `Bearer ${tokenGuest}`)
+        console.log(res.body.message)
+        expect(res.statusCode).toEqual(400)
+    })
 
-
-
-
+    //POST: 
+    it('POST: Create cancellation of none-existent booking', async () => {
+        const cancellation ={
+            ...cancellationTest,
+            booking: bookingInvalid 
+        }
+        const res = await request(app)
+            .post(`/api/v1/cancellations`).send( 
+                cancellation                          
+            ).set('Authorization', `Bearer ${tokenHost}`)
+        console.log(res.body.message)
+        expect(res.statusCode).toEqual(400)
+    })
+    
   
 
 })

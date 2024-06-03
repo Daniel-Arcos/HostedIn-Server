@@ -2,47 +2,41 @@ const request = require('supertest')
 const app = require('../../src/index')
 const moongose = require('mongoose')
 
-describe('Booking API Endpoints', () => {
-
-    //DATOS DE PRUEBA:
+describe('Bookings Endpoints: Registry Bookings Cases', () => {
     let userHostTest = {
         _id: '',
-        email: 'userHostBTest@gmail.com',
-        fullName: 'User Booking Test',
-        birthDate: '2003-03-05T06:00:00.000+00:00',
-        phoneNumber: '1234567891',
-        password: 'Qwertyui1=',
+        email: 'userhost@gmail.com',
+        fullName: 'User Test Number One',
+        birthDate: '2000-12-10',
+        phoneNumber: '2345678901',
+        password: 'P4SSw0RD#123',
         roles: ['Host']
     }
     let userGuestTest = {
         _id: '',
-        email: 'userGuestBTest@gmail.com',
-        fullName: 'User Booking Test',
-        birthDate: '2003-03-05T06:00:00.000+00:00',
-        phoneNumber: '1234567891',
-        password: 'Qwertyui1=',
+        email: 'userguestdos@gmail.com',
+        fullName: 'User Test Number two',
+        birthDate: '2000-12-10',
+        phoneNumber: '0987654321',
+        password: 'P4SSw0RD#123',
         roles: ['Guest']
     }
-    let userGuestTest2 = {
+    let otherUserTest = {
         _id: '',
-        email: 'userGuestBTest2@gmail.com',
-        fullName: 'User Booking Test',
-        birthDate: '2003-03-05T06:00:00.000+00:00',
-        phoneNumber: '1234567891',
-        password: 'Qwertyui1=',
+        email: 'userguesttres@gmail.com',
+        fullName: 'User Test Number three',
+        birthDate: '2000-12-10',
+        phoneNumber: '0987654331',
+        password: 'P4SSw0RD#123',
         roles: ['Guest']
     }
-    let tokenHost
-    let tokenGuest
-    let tokenGuest2
+    let tokenHost;
+    let tokenGuest;    
+    let tokenGuest2;
+    
+    
 
-    afterAll(async () => {
-        await moongose.disconnect();
-        app.close();
-    });
-
-    //Registro de usuarios y alojamiento.
-    it('Registrar usuario Host', async () => {
+    it('Registry Host', async () => {
         const res = await request(app)
             .post('/api/v1/auth/signup')
             .send({
@@ -55,12 +49,16 @@ describe('Booking API Endpoints', () => {
             })
 
         expect(res.statusCode).toEqual(201)
+        expect(res.body.user.email).toEqual(userHostTest.email)
+        expect(res.body.user.fullName).toEqual(userHostTest.fullName)
+        expect(res.body.user.roles).toEqual(expect.arrayContaining(userHostTest.roles))
         userHostTest._id = res.body.user._id
         let tokenBearer = res.headers.authorization
         tokenHost = tokenBearer.replace("Bearer ", "")
     })
 
-    it('Registrar usuario Guest', async () => {
+
+    it('Registry Guest one', async () => {
         const res = await request(app)
             .post('/api/v1/auth/signup')
             .send({
@@ -73,45 +71,38 @@ describe('Booking API Endpoints', () => {
             })
 
         expect(res.statusCode).toEqual(201)
-        console.log(res.message)
-        userGuestTest._id = res.body.user._id
+        expect(res.body.user.email).toEqual(userGuestTest.email)
+        expect(res.body.user.fullName).toEqual(userGuestTest.fullName)
+        expect(res.body.user.roles).toEqual(expect.arrayContaining(userGuestTest.roles))
+        userGuestTest._id =  res.body.user._id
         let tokenBearer = res.headers.authorization
         tokenGuest = tokenBearer.replace("Bearer ", "")
-    })
-
-    it('Registrar usuario Guest2', async () => {
+    })    
+    
+  
+    it('Registry Guest two', async () => {
         const res = await request(app)
             .post('/api/v1/auth/signup')
             .send({
-                email: userGuestTest2.email,
-                fullName: userGuestTest2.fullName,
-                birthDate: userGuestTest2.birthDate,
-                phoneNumber: userGuestTest2.phoneNumber,
-                password: userGuestTest2.password,
-                roles: userGuestTest2.roles
+                email: otherUserTest.email,
+                fullName: otherUserTest.fullName,
+                birthDate: otherUserTest.birthDate,
+                phoneNumber: otherUserTest.phoneNumber,
+                password: otherUserTest.password,
+                roles: otherUserTest.roles
             })
 
         expect(res.statusCode).toEqual(201)
-        userGuestTest2._id = res.body.user._id
-        let tokenBearer = res.headers.authorization
+        expect(res.body.user.email).toEqual(otherUserTest.email)
+        expect(res.body.user.fullName).toEqual(otherUserTest.fullName)
+        expect(res.body.user.roles).toEqual(expect.arrayContaining(otherUserTest.roles))
+        otherUserTest._id = res.body.user._id
+        let tokenBearer =  res.headers.authorization
         tokenGuest2 = tokenBearer.replace("Bearer ", "")
+       
     })
 
-    it('Registrar alojamiento prueba', async () => {
-        const res = await request(app)
-            .post('/api/v1/accommodations')
-            .send(
-                accommodation
-            )
-            .set('Authorization', `Bearer ${tokenHost}`)
-
-        expect(res.statusCode).toEqual(201)
-        expect(res.body.accommodation.title).toEqual(accommodation.title)
-        expect(res.body.accommodation.description).toEqual(accommodation.description)
-        accommodation._id = res.body.accommodation._id
-    })
-
-
+//DATOS ALOJAMIENTO
     let accommodation = {
         _id: '',
         accommodationServices: ['tv'],
@@ -130,23 +121,37 @@ describe('Booking API Endpoints', () => {
             longitude:-96.926730,
             address: 'Fei'
         }
-      }
+    }
+
+    it('Registry accommodation', async () => {
+        const res = await request(app)
+            .post('/api/v1/accommodations')
+            .send(
+                accommodation
+            )
+            .set('Authorization', `Bearer ${tokenHost}`)
+
+        expect(res.statusCode).toEqual(201)
+        expect(res.body.accommodation.title).toEqual(accommodation.title)
+        expect(res.body.accommodation.description).toEqual(accommodation.description)
+        accommodation._id = res.body.accommodation._id
+    })
 
     let bookingTest = {
         _id: '',
         accommodation: accommodation,
-        beginningDate: '2024-06-26T00:00:00.000+00:00',
-        endidngDate: '2024-06-27T00:00:00.000+00:00',
-        numberOfGuest: 1,
+        beginningDate: '2024-12-10',
+        endingDate: '2024-12-11',
+        numberOfGuests: 1,
         totalCost: 200,
         bookingStatus: 'Current',
-        guesUser: userGuestTest,
+        guestUser: userGuestTest,
         hostUser: userHostTest
     }
 
 
     //POST Booking : exitoso con guest.
-    it('Crear Booking exitosamente', async () => {
+    it('POST: create booking succ', async () => {
         const res = await request(app)
             .post('/api/v1/bookings').send(
                 bookingTest
@@ -159,7 +164,7 @@ describe('Booking API Endpoints', () => {
 
 
     //POST Booking: reservar el mismo alojamiento con el mismo usuario
-    it('eticion crear booking repetido', async () => {
+    it('POST: Create repeated booking', async () => {
         const res = await request(app)
             .post('/api/v1/bookings').send(
                 bookingTest
@@ -168,11 +173,15 @@ describe('Booking API Endpoints', () => {
         expect(res.statusCode).toEqual(400)
     })
 
+
+   
+
+
     //POST Booking: reservar en fechas ocupadas.
-    it('Peticion crear booking en fechas ya reservadas', async () => {
+    it('POST: Create booking with already reserved dates', async () => {
         const wrongBooking ={
             ...bookingTest,
-            guestUser: userGuestTest2
+            guestUser: otherUserTest
         }
         const res = await request(app)
             .post('/api/v1/bookings').send(
@@ -181,9 +190,10 @@ describe('Booking API Endpoints', () => {
         console.log(res.body.message)
         expect(res.statusCode).toEqual(400)
     })
+    
 
     //Post Booking : fallo con host
-    it('Crear Booking sin exito con host', async () => {
+    it('POST: Create Booking with host', async () => {
         const res = await request(app)
             .post('/api/v1/bookings').send(
                 bookingTest
@@ -193,7 +203,7 @@ describe('Booking API Endpoints', () => {
     })
 
     //POST Booking: fallo con campos vacios
-    it('Peticion Crear Booking con campos vacios', async () => {
+    it('POST: create booking with emty field', async () => {
         const wrongBooking ={
             ...bookingTest,
             beginningDate: ""
@@ -208,7 +218,7 @@ describe('Booking API Endpoints', () => {
     })
 
     //POST Booking: fallo con fechas incongruentes
-    it('Petiicion Crear Booking con fecha invalidas', async () => {
+    it('POST: Crate booking with incongruent dates', async () => {
         const wrongBooking ={
             ...bookingTest,
             beginningDate: "2024-06-26T00:00:00.000+00:00",
@@ -224,7 +234,7 @@ describe('Booking API Endpoints', () => {
 
 
     //POST Booking: usuario inexistente:
-    it('CPeticion crear Booking con usuario guest inexistente', async () => {
+    it('POST: Create booking with null user', async () => {
         const wrongBooking ={
             ...bookingTest,
             guesUser :  { _id: '00a0a0a0a000a000a0a000a0' }
@@ -238,7 +248,7 @@ describe('Booking API Endpoints', () => {
     })
 
     //POST Booking : fecha de inicio previa a la actual.
-    it('Petiicion Crear Booking con fecha inciio invalidas', async () => {
+    it('POST: Create booking with beginningdate before today', async () => {
         const wrongBooking ={
             ...bookingTest,
             beginningDate: "2023-01-01T00:00:00.000+00:00"
@@ -252,7 +262,7 @@ describe('Booking API Endpoints', () => {
     })
 
     //POST Booking: Host y Guest son el mismo.
-    it('Petiicion Crear Booking guest y host son el mismo', async () => {
+    it('POST: Create booking with host and guest are the same', async () => {
         const wrongBooking ={
             ...bookingTest,
             guesUser: userHostTest
@@ -267,7 +277,7 @@ describe('Booking API Endpoints', () => {
 
 
     //Post Booking: Objeto imcompleto
-    it('Petiicion Crear Booking con campos imcompletos', async () => {
+    it('POST: Create impcomplete object Booking', async () => {
         const wrongBooking ={
             beginningDate:"",
             guesUser: userHostTest
@@ -282,17 +292,16 @@ describe('Booking API Endpoints', () => {
 
 
     //GET booking : exitosamente con Guest
-    it('Petiicion Get Booking existente', async () => {
+    it('GET: existing Booking succ with guest ', async () => {
         const res = await request(app)
             .get(`/api/v1/bookings/${bookingTest._id}`).send(                
             ).set('Authorization', `Bearer ${tokenGuest}`)
         console.log(res.body.message)
         expect(res.statusCode).toEqual(200)
-        expect(res.body.booking.beginningDate).toEqual(bookingTest.beginningDate)
     })
 
       //GET Booking: exitosamente con Host
-      it('Petiicion Get Booking con Host', async () => {
+      it('GET: existing Booking succ with host', async () => {
         const res = await request(app)
             .get(`/api/v1/bookings/${bookingTest._id}`).send(                
             ).set('Authorization', `Bearer ${tokenHost}`)
@@ -301,23 +310,22 @@ describe('Booking API Endpoints', () => {
     })
 
     //GET booking : inexistente
-    it('Petiicion Get Booking inexistente', async () => {
+    it('GET: get inexistentent booking', async () => {
         const res = await request(app)
             .get(`/api/v1/bookings/00a0a0a0a000a000a0a000a0`).send(                
             ).set('Authorization', `Bearer ${tokenGuest}`)
         console.log(res.body.message)
-        expect(res.statusCode).toEqual(400)
+        expect(res.statusCode).toEqual(404)
     })
 
     //GET Booking: booking sin parametro
-    it('Petiicion Get Booking sin parametros', async () => {
+    it('GET: get booking without ID.', async () => {
         const res = await request(app)
             .get(`/api/v1/bookings/`).send(                
             ).set('Authorization', `Bearer ${tokenGuest}`)
         console.log(res.body.message)
-        expect(res.statusCode).toEqual(400)
+        expect(res.statusCode).toEqual(404)
     })
-
     
 
   

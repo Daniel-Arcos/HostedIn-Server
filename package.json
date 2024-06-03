@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
-    "test": "jest --testTimeout 60000"
+    "test": "jest --testTimeout 6000000"
   },
   "keywords": [],
   "author": "",

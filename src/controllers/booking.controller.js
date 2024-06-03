@@ -122,6 +122,7 @@ const getBookingByAccommodationId = async(req, res, next) => {
        
         const bookingStatus = req.query.status
         let result
+
         if(bookingStatus){
             filteredArray = filterBookingsByStatus(bookingStatus, bookingsArray)
             result = filteredArray.map(booking => booking.toJSON())
@@ -178,6 +179,9 @@ const getGuestBookings = async (req, res, next) => {
         const userId= req.params.userId
         const {status} = req.query
         let bookings
+        if(status === undefined){
+            return res.status(400).send({error: "El status viene nulo"})
+        }
        if(status === BookingStatus.CURRENT){
             bookings = await BookingService.getCurrentGuestBookings(userId)
         }
