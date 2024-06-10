@@ -119,14 +119,17 @@ const getBookingByAccommodationId = async(req, res, next) => {
         }               
         allBookingsFound = await BookingService.getAllBookingsByAccommodation(accommodationId)        
         let bookingsArray = Array.isArray(allBookingsFound.bookings) ? allBookingsFound.bookings : [];
+       
         const bookingStatus = req.query.status
         let result
+
         if(bookingStatus){
             filteredArray = filterBookingsByStatus(bookingStatus, bookingsArray)
             result = filteredArray.map(booking => booking.toJSON())
         }else{
             result = allBookingsFound
         }
+        
         return res.status(200).send({
             message: "Reservaciones recuperadas correctamente",
             bookings: result          
@@ -176,6 +179,9 @@ const getGuestBookings = async (req, res, next) => {
         const userId= req.params.userId
         const {status} = req.query
         let bookings
+        if(status === undefined){
+            return res.status(400).send({error: "El status viene nulo"})
+        }
        if(status === BookingStatus.CURRENT){
             bookings = await BookingService.getCurrentGuestBookings(userId)
         }
@@ -206,10 +212,8 @@ const checkOverdueBookigns = async() =>{
 
 module.exports = {
     createBooking,
-    editBooking,
     getBookingById,
     getBookingByAccommodationId,
-    deleteBookingById, 
     getGuestBookings, 
     checkOverdueBookigns
 }
