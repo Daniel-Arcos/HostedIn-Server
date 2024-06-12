@@ -108,7 +108,6 @@ const updateAccommodation = async (req, res, next) => {
             },
             user: req.body.user._id
         };
-        console.log(accommodationUpdated)
         result = await AccommodationService.updateAccommodation(accommodationUpdated)
 
         res.status(201).send({
@@ -124,7 +123,6 @@ const updateAccommodation = async (req, res, next) => {
         next(error)
     }
 }
-
 
 const deleteAccommodation = async (req, res, next) => {
     try {
@@ -145,8 +143,6 @@ const deleteAccommodation = async (req, res, next) => {
         next(error)
     }
 }
-
-
 
 module.exports = {
     createAccommodation,

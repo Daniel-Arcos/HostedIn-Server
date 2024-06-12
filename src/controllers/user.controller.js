@@ -109,7 +109,7 @@ const deleteUserById = async (req, res, next) => {
     try {
         const userId = req.params.userId;
 
-        if (userId == null) {
+        if (userId === null) {
             return res.status(400).send({error: "El id del usuario viene nulo"})
         }
         
