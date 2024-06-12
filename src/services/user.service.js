@@ -1,6 +1,11 @@
 const { token } = require('morgan')
 const User = require('../models/User')
 const Jwt = require('../security/Jwt')
+const Accommodation = require('../models/Accommodation')
+const Booking = require('../models/Booking')
+const BookingStatus = require('../models/BookingStatus')
+const Review = require('../models/Review');
+const Cancellation = require('../models/Cancellation')
 const PasswordCodes = require('../models/PasswordCode')
 const RecoverPassUtils = require('../utils/RecoverPasswordUtils')
 const MailSender = require('../utils/MailSender')
@@ -114,6 +119,41 @@ const deleteAccount = async (userId) => {
                 message: "Usuario no encontrado"
             }
         }
+
+        const userAccommodations = await Accommodation.find({ user: userId });
+
+        if (userAccommodations && userAccommodations.length > 0) {
+            for (const accommodation of userAccommodations) {
+                let hasBookings = await Booking.findOne({accommodation: accommodation._id, bookingStatus: BookingStatus.CURRENT});
+
+                if (hasBookings) {
+                    throw {
+                        status: 400,
+                        message: "No puedes eliminar tu cuenta por reservaciones pendientes"
+                    };
+                }
+            }
+        }
+
+        const hasGuestBookings = await Booking.findOne({guestUser: userId, bookingStatus: BookingStatus.CURRENT});
+
+        if (hasGuestBookings) {
+            throw {
+                status: 400,
+                message: "No puedes eliminar tu cuenta por reservaciones activas"
+            };
+        }
+
+        const accommodationIds = userAccommodations.map(acc => acc._id);
+        const bookings = await Booking.find({ accommodation: { $in: accommodationIds } });
+        const bookingsId = bookings.map(book => book._id);
+
+        await Accommodation.deleteMany({ user: userId });
+        await Review.deleteMany({ accommodation: { $in: accommodationIds } });
+        await Cancellation.deleteMany({ booking: { $in: bookingsId } });
+        await Cancellation.deleteMany({ cancellator: { $in: userId } });
+        await Booking.deleteMany({ accommodation: { $in: accommodationIds } });
+        await Booking.deleteMany({ guestUser: userId });
 
         const deletedUser = await User.deleteOne({ _id: userId });
 

@@ -185,8 +185,6 @@ const getAllOwnedAccommodations = async (id) => {
             select: '-password'
         });
 
-        console.log(allAccommodations)
-
         return allAccommodations;
     } catch (error) {
         if (error.status) {
@@ -198,6 +196,7 @@ const getAllOwnedAccommodations = async (id) => {
         throw error;
     }
 }
+
 const getOwnedBookedAccommodations = async (id) => {
     try {
 
