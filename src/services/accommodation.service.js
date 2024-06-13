@@ -184,9 +184,7 @@ const getAllOwnedAccommodations = async (id) => {
             path: 'user',
             select: '-password'
         });
-
-        console.log(allAccommodations)
-
+        
         return allAccommodations;
     } catch (error) {
         if (error.status) {

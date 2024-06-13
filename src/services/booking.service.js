@@ -109,6 +109,7 @@ const getAllBookingsByAccommodation = async (accommodationId)=> {
         if(!foundBookings) {
             throw{ status: 404, message:"No hay reservaciones para este alojamiento" }
         }
+        console.log("ddddddd")
         return foundBookings
     } catch (error) {
         if (error.status) {

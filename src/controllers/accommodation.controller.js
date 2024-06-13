@@ -108,9 +108,7 @@ const updateAccommodation = async (req, res, next) => {
             },
             user: req.body.user._id
         };
-        console.log(accommodationUpdated)
         result = await AccommodationService.updateAccommodation(accommodationUpdated)
-
         res.status(201).send({
             message: "Alojamiento actualizado con éxito",
             accommodation: result
