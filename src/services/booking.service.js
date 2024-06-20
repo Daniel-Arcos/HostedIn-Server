@@ -29,7 +29,6 @@ const saveBooking = async(booking) => {
                 throw{ status: 400, message:"Ya hay una reservación entre esas fechas" }
             }
         });
-    
 
         const newBooking = new Booking(booking)
         const savedBooking = await newBooking.save()
@@ -213,4 +212,3 @@ module.exports  = {
     deleteBooking,
     checkOverdueBookings
 }
-

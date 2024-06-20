@@ -1,0 +1,76 @@
+[2024-06-12T18:58:16.270Z] _id is not defined
+ReferenceError: _id is not defined
+    at deleteUserById (C:\Users\egd17\Documents\DESARROLLO DE SISTEMAS EN RED\ProyectoFinal\HostedIn-Server\src\controllers\user.controller.js:116:91)
+    at Layer.handle [as handle_request] (C:\Users\egd17\Documents\DESARROLLO DE SISTEMAS EN RED\ProyectoFinal\HostedIn-Server\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\egd17\Documents\DESARROLLO DE SISTEMAS EN RED\ProyectoFinal\HostedIn-Server\node_modules\express\lib\router\route.js:149:13)
+    at C:\Users\egd17\Documents\DESARROLLO DE SISTEMAS EN RED\ProyectoFinal\HostedIn-Server\src\middlewares\auth.middleware.js:32:13
+    at Layer.handle [as handle_request] (C:\Users\egd17\Documents\DESARROLLO DE SISTEMAS EN RED\ProyectoFinal\HostedIn-Server\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\egd17\Documents\DESARROLLO DE SISTEMAS EN RED\ProyectoFinal\HostedIn-Server\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\egd17\Documents\DESARROLLO DE SISTEMAS EN RED\ProyectoFinal\HostedIn-Server\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\egd17\Documents\DESARROLLO DE SISTEMAS EN RED\ProyectoFinal\HostedIn-Server\node_modules\express\lib\router\layer.js:95:5)
+    at C:\Users\egd17\Documents\DESARROLLO DE SISTEMAS EN RED\ProyectoFinal\HostedIn-Server\node_modules\express\lib\router\index.js:284:15
+    at param (C:\Users\egd17\Documents\DESARROLLO DE SISTEMAS EN RED\ProyectoFinal\HostedIn-Server\node_modules\express\lib\router\index.js:365:14)
+
+[2024-06-12T18:58:34.017Z] _id is not defined
+ReferenceError: _id is not defined
+    at deleteUserById (C:\Users\egd17\Documents\DESARROLLO DE SISTEMAS EN RED\ProyectoFinal\HostedIn-Server\src\controllers\user.controller.js:116:91)
+    at Layer.handle [as handle_request] (C:\Users\egd17\Documents\DESARROLLO DE SISTEMAS EN RED\ProyectoFinal\HostedIn-Server\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\egd17\Documents\DESARROLLO DE SISTEMAS EN RED\ProyectoFinal\HostedIn-Server\node_modules\express\lib\router\route.js:149:13)
+    at C:\Users\egd17\Documents\DESARROLLO DE SISTEMAS EN RED\ProyectoFinal\HostedIn-Server\src\middlewares\auth.middleware.js:32:13
+    at Layer.handle [as handle_request] (C:\Users\egd17\Documents\DESARROLLO DE SISTEMAS EN RED\ProyectoFinal\HostedIn-Server\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\egd17\Documents\DESARROLLO DE SISTEMAS EN RED\ProyectoFinal\HostedIn-Server\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\egd17\Documents\DESARROLLO DE SISTEMAS EN RED\ProyectoFinal\HostedIn-Server\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\egd17\Documents\DESARROLLO DE SISTEMAS EN RED\ProyectoFinal\HostedIn-Server\node_modules\express\lib\router\layer.js:95:5)
+    at C:\Users\egd17\Documents\DESARROLLO DE SISTEMAS EN RED\ProyectoFinal\HostedIn-Server\node_modules\express\lib\router\index.js:284:15
+    at param (C:\Users\egd17\Documents\DESARROLLO DE SISTEMAS EN RED\ProyectoFinal\HostedIn-Server\node_modules\express\lib\router\index.js:365:14)
+
+[2024-06-12T18:58:42.593Z] _id is not defined
+ReferenceError: _id is not defined
+    at deleteUserById (C:\Users\egd17\Documents\DESARROLLO DE SISTEMAS EN RED\ProyectoFinal\HostedIn-Server\src\controllers\user.controller.js:116:91)
+    at Layer.handle [as handle_request] (C:\Users\egd17\Documents\DESARROLLO DE SISTEMAS EN RED\ProyectoFinal\HostedIn-Server\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\egd17\Documents\DESARROLLO DE SISTEMAS EN RED\ProyectoFinal\HostedIn-Server\node_modules\express\lib\router\route.js:149:13)
+    at C:\Users\egd17\Documents\DESARROLLO DE SISTEMAS EN RED\ProyectoFinal\HostedIn-Server\src\middlewares\auth.middleware.js:32:13
+    at Layer.handle [as handle_request] (C:\Users\egd17\Documents\DESARROLLO DE SISTEMAS EN RED\ProyectoFinal\HostedIn-Server\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\egd17\Documents\DESARROLLO DE SISTEMAS EN RED\ProyectoFinal\HostedIn-Server\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\egd17\Documents\DESARROLLO DE SISTEMAS EN RED\ProyectoFinal\HostedIn-Server\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\egd17\Documents\DESARROLLO DE SISTEMAS EN RED\ProyectoFinal\HostedIn-Server\node_modules\express\lib\router\layer.js:95:5)
+    at C:\Users\egd17\Documents\DESARROLLO DE SISTEMAS EN RED\ProyectoFinal\HostedIn-Server\node_modules\express\lib\router\index.js:284:15
+    at param (C:\Users\egd17\Documents\DESARROLLO DE SISTEMAS EN RED\ProyectoFinal\HostedIn-Server\node_modules\express\lib\router\index.js:365:14)
+
+[2024-06-12T19:00:20.526Z] _id is not defined
+ReferenceError: _id is not defined
+    at deleteUserById (C:\Users\egd17\Documents\DESARROLLO DE SISTEMAS EN RED\ProyectoFinal\HostedIn-Server\src\controllers\user.controller.js:116:91)
+    at Layer.handle [as handle_request] (C:\Users\egd17\Documents\DESARROLLO DE SISTEMAS EN RED\ProyectoFinal\HostedIn-Server\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\egd17\Documents\DESARROLLO DE SISTEMAS EN RED\ProyectoFinal\HostedIn-Server\node_modules\express\lib\router\route.js:149:13)
+    at C:\Users\egd17\Documents\DESARROLLO DE SISTEMAS EN RED\ProyectoFinal\HostedIn-Server\src\middlewares\auth.middleware.js:32:13
+    at Layer.handle [as handle_request] (C:\Users\egd17\Documents\DESARROLLO DE SISTEMAS EN RED\ProyectoFinal\HostedIn-Server\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\egd17\Documents\DESARROLLO DE SISTEMAS EN RED\ProyectoFinal\HostedIn-Server\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\egd17\Documents\DESARROLLO DE SISTEMAS EN RED\ProyectoFinal\HostedIn-Server\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\egd17\Documents\DESARROLLO DE SISTEMAS EN RED\ProyectoFinal\HostedIn-Server\node_modules\express\lib\router\layer.js:95:5)
+    at C:\Users\egd17\Documents\DESARROLLO DE SISTEMAS EN RED\ProyectoFinal\HostedIn-Server\node_modules\express\lib\router\index.js:284:15
+    at param (C:\Users\egd17\Documents\DESARROLLO DE SISTEMAS EN RED\ProyectoFinal\HostedIn-Server\node_modules\express\lib\router\index.js:365:14)
+
+[2024-06-12T19:01:24.513Z] id is not defined
+ReferenceError: id is not defined
+    at Object.deleteAccount (C:\Users\egd17\Documents\DESARROLLO DE SISTEMAS EN RED\ProyectoFinal\HostedIn-Server\src\services\user.service.js:123:75)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async deleteUserById (C:\Users\egd17\Documents\DESARROLLO DE SISTEMAS EN RED\ProyectoFinal\HostedIn-Server\src\controllers\user.controller.js:116:24)
+
+[2024-06-12T19:01:38.497Z] id is not defined
+ReferenceError: id is not defined
+    at Object.deleteAccount (C:\Users\egd17\Documents\DESARROLLO DE SISTEMAS EN RED\ProyectoFinal\HostedIn-Server\src\services\user.service.js:123:75)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async deleteUserById (C:\Users\egd17\Documents\DESARROLLO DE SISTEMAS EN RED\ProyectoFinal\HostedIn-Server\src\controllers\user.controller.js:116:24)
+
+[2024-06-12T19:04:46.941Z] id is not defined
+ReferenceError: id is not defined
+    at Object.deleteAccount (C:\Users\egd17\Documents\DESARROLLO DE SISTEMAS EN RED\ProyectoFinal\HostedIn-Server\src\services\user.service.js:123:75)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async deleteUserById (C:\Users\egd17\Documents\DESARROLLO DE SISTEMAS EN RED\ProyectoFinal\HostedIn-Server\src\controllers\user.controller.js:116:24)
+
+[2024-06-12T19:05:17.789Z] id is not defined
+ReferenceError: id is not defined
+    at Object.deleteAccount (C:\Users\egd17\Documents\DESARROLLO DE SISTEMAS EN RED\ProyectoFinal\HostedIn-Server\src\services\user.service.js:123:75)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async deleteUserById (C:\Users\egd17\Documents\DESARROLLO DE SISTEMAS EN RED\ProyectoFinal\HostedIn-Server\src\controllers\user.controller.js:118:24)
+

@@ -123,7 +123,6 @@ const updateAccommodation = async (req, res, next) => {
     }
 }
 
-
 const deleteAccommodation = async (req, res, next) => {
     try {
 
@@ -143,8 +142,6 @@ const deleteAccommodation = async (req, res, next) => {
         next(error)
     }
 }
-
-
 
 module.exports = {
     createAccommodation,

@@ -196,6 +196,7 @@ const getAllOwnedAccommodations = async (id) => {
         throw error;
     }
 }
+
 const getOwnedBookedAccommodations = async (id) => {
     try {
 

@@ -1,8 +1,12 @@
-const mongoose = require('mongoose')
-require('dotenv').config();
+const mongoose = require('mongoose');
+const dotenv = require('dotenv')
+dotenv.config();
+const user = process.env.USER_BD;
+const password = encodeURIComponent(process.env.PASSWORD_BD);
+const dbName = process.env.NAME_BD; 
+const ipDirection = process.env.IP_BD;
+const dbPort = process.env.PORT_BD;
 
-const DATABASE_URL = process.env.DATABASE_URL;
-
-mongoose.connect(DATABASE_URL)
+mongoose.connect(`mongodb://${user}:${password}@${ipDirection}:${dbPort}/${dbName}`)
     .then(db => console.log('Db is connected'))
-    .catch(error => console.log(error))
+    .catch(error => console.error('Error connecting to database:', error));

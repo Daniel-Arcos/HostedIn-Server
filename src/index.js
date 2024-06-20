@@ -1,7 +1,8 @@
+const dotenv = require('dotenv');
+dotenv.config(); 
 const app = require('./app')
 const bodyParser = require('body-parser')
 const expressValidator = require('express-validator')
-const dotenv = require('dotenv')
 const expressMongoSanitize = require('express-mongo-sanitize')
 require('./libs/initialSetup')
 require('./database')
