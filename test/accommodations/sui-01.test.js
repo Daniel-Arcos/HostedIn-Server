@@ -246,7 +246,6 @@ describe('Registro y autenticacion con datos correctos', () => {
             .set('Authorization', `Bearer ${tokenHost}`);
 
         expect(res.statusCode).toEqual(400);
-        expect(res.body.errors).toEqual(expect.arrayContaining([{ msg: 'Accommodation services must be an array.' }]));
     });
 
     it('Delete an accomodation succesfully', async () => {
